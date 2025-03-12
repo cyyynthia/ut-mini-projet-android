@@ -19,11 +19,10 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.rememberCameraPositionState
 import m2sdl.lacuillere.ui.screens.home.ZOOM_FACTOR
 
-
 @Composable
 fun currentPositionCameraState(
 	activity: ComponentActivity,
-	fusedLocationClient: FusedLocationProviderClient
+	fusedLocationClient: FusedLocationProviderClient,
 ): CameraPositionState {
 	val state = rememberCameraPositionState {
 		position = CameraPosition.fromLatLngZoom(LatLng(0.0, 0.0), ZOOM_FACTOR)

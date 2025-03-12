@@ -6,20 +6,19 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import m2sdl.lacuillere.data.Restaurant
 import m2sdl.lacuillere.ui.screens.Home
+import m2sdl.lacuillere.ui.screens.Resto
+import m2sdl.lacuillere.ui.screens.RestoScreen
 import m2sdl.lacuillere.ui.screens.home.HomeScreen
-import m2sdl.lacuillere.ui.screens.home.RestoScreen
 import m2sdl.lacuillere.ui.theme.LaCuillereTheme
 import java.time.LocalTime
 
@@ -114,16 +113,17 @@ class MainActivity : ComponentActivity() {
 					NavHost(navController = navController, startDestination = Home) {
 						composable<Home> {
 							HomeScreen(
-								fusedLocationClient,
-								this@MainActivity,
-								restaurants,
-								navController
+								fusedLocationClient = fusedLocationClient,
+								activity = this@MainActivity,
+								restaurants = restaurants,
+								onNavigateToRestaurant = { navController.navigate(Resto(it.id)) }
 							)
 						}
-						composable("resto/{restaurantId}") { routeArg ->
-							val restoId = routeArg.arguments?.getString("restaurantId")
-							val resto = restaurants.find { it.id == restoId }
-							resto?.let { RestoScreen(it) }
+
+						composable<Resto> { backStackEntry ->
+							val resto: Resto = backStackEntry.toRoute()
+							val restaurant = restaurants.find { it.id == resto.id }
+							restaurant?.let { RestoScreen(it) } ?: navController.navigate(Home)
 						}
 					}
 				}
