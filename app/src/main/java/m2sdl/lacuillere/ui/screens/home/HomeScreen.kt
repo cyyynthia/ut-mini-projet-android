@@ -35,7 +35,12 @@ fun HomeScreen(
 	Box(modifier = Modifier.fillMaxSize()) {
 		NavHost(navController = navController, startDestination = Home.List) {
 			composable<Home.Map> { HomeMapScreen(fusedLocationClient, activity, restaurants) }
-			composable<Home.List> { HomeListScreen(restaurants) }
+			composable<Home.List> { HomeListScreen(navController,restaurants) }
+			composable("resto/{restaurantId}") { routeArg ->
+				val restoId = routeArg.arguments?.getString("restaurantId")
+				val resto = restaurants.find { it.id == restoId }
+				resto?.let { RestoScreen(it) }
+			}
 		}
 		SearchBar()
 		HomeScreenNav(navController)

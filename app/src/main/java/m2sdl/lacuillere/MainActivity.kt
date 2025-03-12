@@ -55,6 +55,54 @@ class MainActivity : ComponentActivity() {
 				listOf("photo1", "photo2"),
 				LatLng(43.5622513, 1.463182)
 			),
+			Restaurant(
+				"abcde",
+				"Resto U' Le Canal",
+				"About",
+				"[...] Université de Toulouse",
+				"Rangueil, Toulouse",
+				"0500505005",
+				listOf(Pair(LocalTime.of(11, 30), LocalTime.of(13, 30))),
+				"Menu Burger",
+				listOf("photo1", "photo2"),
+				LatLng(43.5609537, 1.4718944)
+			),
+			Restaurant(
+				"ghijl",
+				"Resto u' Le Theorème",
+				"About",
+				"[...] Université de Toulouse",
+				"Rangueil, Toulouse",
+				"0500505005",
+				listOf(Pair(LocalTime.of(11, 30), LocalTime.of(13, 30))),
+				"Menu Burger",
+				listOf("photo1", "photo2"),
+				LatLng(43.5622513, 1.463182)
+			),
+			Restaurant(
+				"abcef",
+				"Resto U' Le Canal",
+				"About",
+				"[...] Université de Toulouse",
+				"Rangueil, Toulouse",
+				"0500505005",
+				listOf(Pair(LocalTime.of(11, 30), LocalTime.of(13, 30))),
+				"Menu Burger",
+				listOf("photo1", "photo2"),
+				LatLng(43.5609537, 1.4718944)
+			),
+			Restaurant(
+				"ghjkl",
+				"Resto u' Le Theorème",
+				"About",
+				"[...] Université de Toulouse",
+				"Rangueil, Toulouse",
+				"0500505005",
+				listOf(Pair(LocalTime.of(11, 30), LocalTime.of(13, 30))),
+				"Menu Burger",
+				listOf("photo1", "photo2"),
+				LatLng(43.5622513, 1.463182)
+			),
 		)
 
 		setContent {
