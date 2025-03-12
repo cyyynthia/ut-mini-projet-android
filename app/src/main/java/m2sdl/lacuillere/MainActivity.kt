@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.LatLng
 import m2sdl.lacuillere.data.Restaurant
 import m2sdl.lacuillere.ui.screens.Home
 import m2sdl.lacuillere.ui.screens.home.HomeScreen
+import m2sdl.lacuillere.ui.screens.home.RestoScreen
 import m2sdl.lacuillere.ui.theme.LaCuillereTheme
 import java.time.LocalTime
 
@@ -116,7 +117,13 @@ class MainActivity : ComponentActivity() {
 								fusedLocationClient,
 								this@MainActivity,
 								restaurants,
+								navController
 							)
+						}
+						composable("resto/{restaurantId}") { routeArg ->
+							val restoId = routeArg.arguments?.getString("restaurantId")
+							val resto = restaurants.find { it.id == restoId }
+							resto?.let { RestoScreen(it) }
 						}
 					}
 				}
