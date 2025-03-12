@@ -4,6 +4,10 @@
 
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 	<application
 		android:allowBackup="true"
 		android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,10 +21,10 @@
 
 		<meta-data android:name="com.google.android.geo.API_KEY"
 				   android:value="AIzaSyAz78WG3MAS7fU3sUlOIxLW47wqSSr_xF0"/>
+
 		<activity
 			android:name=".MainActivity"
 			android:exported="true"
-			android:label="@string/app_name"
 			android:theme="@style/Theme.LaCuillere">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
@@ -29,5 +33,4 @@
 			</intent-filter>
 		</activity>
 	</application>
-
 </manifest>
