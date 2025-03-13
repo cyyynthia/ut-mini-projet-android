@@ -74,7 +74,7 @@ fun SearchBar() {
 			shadowElevation = 16.dp,
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(16.dp)
+				.padding(start = 16.dp, top = 8.dp, end = 16.dp)
 				.background(Color.Transparent),
 		) {}
 	}

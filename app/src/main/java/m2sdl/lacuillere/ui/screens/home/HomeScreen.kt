@@ -4,11 +4,16 @@ import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Map
@@ -54,7 +59,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeScreenNav(navController: NavController) {
+private fun HomeScreenNav(navController: NavController) {
 	val navBackStackEntry by navController.currentBackStackEntryAsState()
 
 	Column(
@@ -66,7 +71,8 @@ fun HomeScreenNav(navController: NavController) {
 	) {
 		Box(
 			modifier = Modifier
-				.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+				.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+				.consumeWindowInsets(WindowInsets.navigationBars)
 				.clip(RoundedCornerShape(20.dp))
 		) {
 			NavigationBar(
@@ -86,5 +92,7 @@ fun HomeScreenNav(navController: NavController) {
 				)
 			}
 		}
+
+		Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
 	}
 }

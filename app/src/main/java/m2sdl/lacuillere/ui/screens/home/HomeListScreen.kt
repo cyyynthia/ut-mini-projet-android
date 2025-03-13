@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,12 +36,14 @@ fun HomeListScreen(restaurants: List<Restaurant>, onNavigateToRestaurant: (r: Re
 	var firstChecked by remember { mutableStateOf(true) }
 
 	LazyColumn(
-		modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)
+		modifier = Modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp, top = 64.dp),
+		verticalArrangement = Arrangement.spacedBy(8.dp)
 	) {
+		item { Spacer(Modifier.height(40.dp)) }
 		items(restaurants, key = { restaurant -> restaurant.id }) { restaurant ->
 			ElevatedCard(
 				elevation = CardDefaults.cardElevation(
-					defaultElevation = 6.dp
+					defaultElevation = 0.dp
 				),
 				colors = CardDefaults.cardColors(
 					containerColor = MaterialTheme.colorScheme.primaryContainer,
