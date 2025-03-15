@@ -1,6 +1,10 @@
 package m2sdl.lacuillere.ui.screens.home
 
-import androidx.activity.ComponentActivity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,45 +27,50 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.google.android.gms.location.FusedLocationProviderClient
 import m2sdl.lacuillere.data.Restaurant
-import m2sdl.lacuillere.matchesDestination
 import m2sdl.lacuillere.ui.components.SearchBar
-import m2sdl.lacuillere.ui.screens.Home
+import m2sdl.lacuillere.viewmodel.MapViewModel
 
 @Composable
 fun HomeScreen(
-	fusedLocationClient: FusedLocationProviderClient,
-	activity: ComponentActivity,
+	model: MapViewModel,
 	restaurants: List<Restaurant>,
 	onNavigateToRestaurant: (r: Restaurant) -> Unit,
 ) {
-	val navController = rememberNavController()
+	var isViewingList by remember { mutableStateOf(false) }
+	val density = LocalDensity.current
 
 	Box(modifier = Modifier.fillMaxSize()) {
-		NavHost(navController = navController, startDestination = Home.List) {
-			composable<Home.Map> { HomeMapScreen(fusedLocationClient, activity, restaurants, onNavigateToRestaurant) }
-			composable<Home.List> { HomeListScreen(restaurants, onNavigateToRestaurant) }
+		// Ugly shenanigans to deal with navigation controller pitfalls & GoogleMap composable!
+		// To avoid re-rendering the map when switching back and forth, the map is always rendered.
+		// When viewing the lists view, the map is simply hidden behind the list view.
+		// See also: https://stackoverflow.com/a/73808783
+
+		HomeMapScreen(model, restaurants, onNavigateToRestaurant)
+
+		AnimatedVisibility(
+			visible = isViewingList,
+			enter = slideInVertically { with(density) { 40.dp.roundToPx() } } + fadeIn(),
+			exit = slideOutVertically { with(density) { 40.dp.roundToPx() } } + fadeOut(),
+		) {
+			HomeListScreen(restaurants, onNavigateToRestaurant)
 		}
 
 		SearchBar()
-		HomeScreenNav(navController)
+		HomeScreenNav(isViewingList, onChange = { isViewingList = it })
 	}
 }
 
 @Composable
-private fun HomeScreenNav(navController: NavController) {
-	val navBackStackEntry by navController.currentBackStackEntryAsState()
-
+private fun HomeScreenNav(isViewingList: Boolean, onChange: (value: Boolean) -> Unit) {
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
@@ -73,22 +82,22 @@ private fun HomeScreenNav(navController: NavController) {
 			modifier = Modifier
 				.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
 				.consumeWindowInsets(WindowInsets.navigationBars)
-				.clip(RoundedCornerShape(20.dp))
 		) {
 			NavigationBar(
 				modifier = Modifier
 					.width(160.dp)
 					.height(44.dp)
+					.clip(RoundedCornerShape(22.dp))
 			) {
 				NavigationBarItem(
-					selected = navBackStackEntry.matchesDestination(Home.Map),
+					selected = !isViewingList,
 					icon = { Icon(Icons.Filled.Map, contentDescription = null) },
-					onClick = { navController.navigate(Home.Map) }
+					onClick = { onChange(false) }
 				)
 				NavigationBarItem(
-					selected = navBackStackEntry.matchesDestination(Home.List),
+					selected = isViewingList,
 					icon = { Icon(Icons.Filled.TableRows, contentDescription = null) },
-					onClick = { navController.navigate(Home.List) }
+					onClick = { onChange(true) }
 				)
 			}
 		}

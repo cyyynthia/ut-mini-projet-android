@@ -46,6 +46,7 @@ dependencies {
 	/// GOOGLE SPYWARE BLOAT
 	implementation(libs.google.maps.compose)
 	implementation(libs.google.services.location)
+	implementation(libs.google.services.maps)
 
 	/// NAVIGATION
 	// Jetpack Compose Integration

@@ -11,6 +11,7 @@ coreKtx = "1.15.0"
 googleMapsCompose = "6.4.0"
 googleServices = "4.4.2"
 googleServicesLocation = "21.3.0"
+googleServicesMaps = "19.1.0"
 kotlin = "2.1.10"
 kotlinxSerialization = "1.8.0"
 lifecycleRuntimeKtx = "2.8.7"
@@ -36,6 +37,7 @@ coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCo
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
 google-maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "googleMapsCompose" }
 google-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "googleServicesLocation" }
+google-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "googleServicesMaps" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 
 [plugins]

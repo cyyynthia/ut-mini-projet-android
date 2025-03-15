@@ -12,8 +12,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import m2sdl.lacuillere.data.Restaurant
 import m2sdl.lacuillere.ui.screens.Home
@@ -21,16 +19,13 @@ import m2sdl.lacuillere.ui.screens.Resto
 import m2sdl.lacuillere.ui.screens.RestoScreen
 import m2sdl.lacuillere.ui.screens.home.HomeScreen
 import m2sdl.lacuillere.ui.theme.LaCuillereTheme
+import m2sdl.lacuillere.viewmodel.MapViewModel
 import java.time.LocalTime
 
 class MainActivity : ComponentActivity() {
-	private lateinit var fusedLocationClient: FusedLocationProviderClient
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		enableEdgeToEdge()
-
-		fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
 		val restaurants = listOf(
 			Restaurant(
@@ -115,8 +110,7 @@ class MainActivity : ComponentActivity() {
 					NavHost(navController = navController, startDestination = Home) {
 						composable<Home> {
 							HomeScreen(
-								fusedLocationClient = fusedLocationClient,
-								activity = this@MainActivity,
+								model = MapViewModel(),
 								restaurants = restaurants,
 								onNavigateToRestaurant = { navController.navigate(Resto(it.id)) }
 							)
