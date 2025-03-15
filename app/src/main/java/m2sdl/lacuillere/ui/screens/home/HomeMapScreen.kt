@@ -8,7 +8,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -17,12 +16,11 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
 import m2sdl.lacuillere.R
+import m2sdl.lacuillere.applyTo
 import m2sdl.lacuillere.data.Restaurant
 import m2sdl.lacuillere.isNull
 import m2sdl.lacuillere.ui.composables.RequestLocation
 import m2sdl.lacuillere.viewmodel.MapViewModel
-
-const val ZOOM_FACTOR = 15f
 
 @Composable
 fun HomeMapScreen(
@@ -33,10 +31,8 @@ fun HomeMapScreen(
 ) {
 	val userLocation by model.userLocation
 	val locationError by model.locationError
-	val cameraPositionState = rememberCameraPositionState()
+	val cameraPositionState = rememberCameraPositionState { userLocation?.applyTo(this) }
 	val coroutineScope = rememberCoroutineScope()
-
-	RequestLocation(model)
 
 	locationError?.let {
 		when (it) {
@@ -62,11 +58,10 @@ fun HomeMapScreen(
 		}
 	}
 
-	userLocation?.let {
-		cameraPositionState.position = CameraPosition.fromLatLngZoom(it, ZOOM_FACTOR)
-	}
-
-	if (!cameraPositionState.isNull()) {
+	if (cameraPositionState.isNull()) {
+		userLocation?.applyTo(cameraPositionState)
+			?: RequestLocation(model)
+	} else {
 		GoogleMap(
 			modifier = Modifier.fillMaxSize(),
 			cameraPositionState = cameraPositionState,
@@ -94,12 +89,6 @@ fun HomeMapScreen(
 
 						false
 					}
-				)
-			}
-
-			userLocation?.let {
-				Marker(
-					state = MarkerState(position = it)
 				)
 			}
 		}

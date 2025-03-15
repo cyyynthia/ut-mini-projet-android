@@ -1,5 +1,6 @@
 package m2sdl.lacuillere.ui.components
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.absoluteOffset
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.SearchBarDefaults.InputField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,14 +24,23 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.SearchBar as MaterialSearchBar
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 fun SearchBar() {
-	var query by rememberSaveable { mutableStateOf("") }
 	var expanded by rememberSaveable { mutableStateOf(false) }
+
+	if (expanded) {
+		Toast.makeText(LocalContext.current, "Cette fonctionnalité n'est pas implémentée.", Toast.LENGTH_SHORT).show()
+		LocalSoftwareKeyboardController.current?.hide()
+		LocalFocusManager.current.clearFocus(true)
+		expanded = false
+	}
 
 	Box(
 		modifier = Modifier
@@ -43,12 +54,9 @@ fun SearchBar() {
 		MaterialSearchBar(
 			inputField = {
 				InputField(
-					query = query,
-					onQueryChange = { query = it },
-					onSearch = {
-						expanded = false
-						println("Search: $query")
-					},
+					query = "",
+					onQueryChange = {},
+					onSearch = {},
 
 					expanded = expanded,
 					onExpandedChange = { expanded = it },
@@ -56,10 +64,12 @@ fun SearchBar() {
 						Text("Rechercher un restaurant...")
 					},
 					leadingIcon = {
-						Icon(
-							imageVector = Icons.Default.Menu,
-							contentDescription = null,
-						)
+						IconButton(onClick = {}) {
+							Icon(
+								imageVector = Icons.Default.Menu,
+								contentDescription = null,
+							)
+						}
 					},
 					trailingIcon = {
 						Icon(

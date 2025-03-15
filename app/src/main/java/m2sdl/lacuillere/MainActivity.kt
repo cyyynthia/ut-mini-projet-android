@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.google.android.gms.maps.model.LatLng
 import m2sdl.lacuillere.data.Restaurant
+import m2sdl.lacuillere.ui.composables.RequestLocation
 import m2sdl.lacuillere.ui.screens.Home
 import m2sdl.lacuillere.ui.screens.Resto
 import m2sdl.lacuillere.ui.screens.RestoScreen
@@ -104,13 +105,16 @@ class MainActivity : ComponentActivity() {
 
 		setContent {
 			val navController = rememberNavController()
+			val mapModel = MapViewModel()
+
+			RequestLocation(mapModel)
 
 			LaCuillereTheme {
 				Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
 					NavHost(navController = navController, startDestination = Home) {
 						composable<Home> {
 							HomeScreen(
-								model = MapViewModel(),
+								model = mapModel,
 								restaurants = restaurants,
 								onNavigateToRestaurant = { navController.navigate(Resto(it.id)) }
 							)
