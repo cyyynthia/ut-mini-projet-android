@@ -2,7 +2,6 @@ package m2sdl.lacuillere.ui.composables
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -19,12 +18,8 @@ fun RequestLocation(model: MapViewModel) {
 	val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
 
 	val contract = ActivityResultContracts.RequestPermission()
-	val permissionLauncher = rememberLauncherForActivityResult(contract) { isGranted ->
-		if (isGranted) {
-			model.fetchUserLocation(context, fusedLocationClient)
-		} else {
-			Toast.makeText(context, "Location permission was denied by the user.", Toast.LENGTH_SHORT).show()
-		}
+	val permissionLauncher = rememberLauncherForActivityResult(contract) {
+		model.fetchUserLocation(context, fusedLocationClient)
 	}
 
 	LaunchedEffect(Unit) {

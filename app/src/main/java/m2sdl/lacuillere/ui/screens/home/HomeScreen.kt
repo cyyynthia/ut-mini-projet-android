@@ -54,7 +54,7 @@ fun HomeScreen(
 		// When viewing the lists view, the map is simply hidden behind the list view.
 		// See also: https://stackoverflow.com/a/73808783
 
-		HomeMapScreen(model, restaurants, onNavigateToRestaurant)
+		HomeMapScreen(model, restaurants, onNavigateToRestaurant, onMapUnavailable = { isViewingList = true })
 
 		AnimatedVisibility(
 			visible = isViewingList,
