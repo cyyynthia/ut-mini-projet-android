@@ -21,8 +21,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
@@ -144,7 +147,7 @@ class PhotoActivity : ComponentActivity() {
 											finish()
 										}
 									) {
-										Text("Save")
+										Text("Sauvegarder")
 									}
 								}
 							)
@@ -157,7 +160,10 @@ class PhotoActivity : ComponentActivity() {
 							exit = slideOutVertically { with(density) { 80.dp.roundToPx() } } + fadeOut(),
 						) {
 							BottomAppBar {
-								LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+								LazyRow(
+									modifier = Modifier.padding(horizontal = 16.dp),
+									horizontalArrangement = Arrangement.spacedBy(8.dp)
+								) {
 									item {
 										FilterChip(
 											selected = false,
@@ -178,16 +184,25 @@ class PhotoActivity : ComponentActivity() {
 						}
 					}
 				) { innerPadding ->
-					val animateTop by animateDpAsState(innerPadding.calculateTopPadding())
-					val animateBottom by animateDpAsState(innerPadding.calculateBottomPadding())
+					val navbarPadding = WindowInsets.navigationBars.asPaddingValues()
+
+					val topPadding = innerPadding.calculateTopPadding()
+					val bottomPadding = // To make sure animation lands *just right*
+						(if (image != null) navbarPadding.calculateBottomPadding() else 0.dp) +
+							(if (isApplyingFilters) 80.dp else 0.dp)
+
+					val animateTop by animateDpAsState(topPadding)
+					val animateBottom by animateDpAsState(bottomPadding)
 
 					if (permissionGranted) {
 						val img = image // Break out of delegation
 						when (img) {
 							null -> CameraPreview(viewModel = cameraViewModel)
-							else -> Column(Modifier
-								.padding(top = animateTop, bottom = animateBottom)
-								.fillMaxSize()) {
+							else -> Column(
+								Modifier
+									.padding(top = animateTop, bottom = animateBottom)
+									.fillMaxSize()
+							) {
 								Image(
 									img.asImageBitmap(),
 									modifier = Modifier.fillMaxSize(),

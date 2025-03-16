@@ -27,7 +27,7 @@ import m2sdl.lacuillere.data.Restaurant
 fun RestoScreen(restaurant: Restaurant) {
 	var selectedTabIndex by remember { mutableStateOf(0) }
 	var showDialog by remember { mutableStateOf(false) }
-	val tabs = listOf("A propos", "Avis")
+	val tabs = listOf("À propos", "Avis")
 
 	Column(modifier = Modifier.fillMaxSize()) {
 		Box {
@@ -42,7 +42,9 @@ fun RestoScreen(restaurant: Restaurant) {
 			)
 		}
 		Text(
-			text = restaurant.name, style = MaterialTheme.typography.headlineLarge, modifier = Modifier.padding(16.dp)
+			text = restaurant.name,
+			style = MaterialTheme.typography.headlineLarge,
+			modifier = Modifier.padding(16.dp)
 		)
 		TabRow(selectedTabIndex = selectedTabIndex) {
 			tabs.forEachIndexed { index, title ->

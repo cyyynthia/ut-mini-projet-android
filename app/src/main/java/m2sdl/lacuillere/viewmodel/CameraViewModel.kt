@@ -23,7 +23,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import m2sdl.lacuillere.addListener
 
-
 class CameraViewModel : ViewModel() {
 	private val _activityTerminated = mutableStateOf(false)
 	private val _surfaceRequest = mutableStateOf<SurfaceRequest?>(null)
