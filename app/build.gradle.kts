@@ -62,6 +62,8 @@ dependencies {
 
 	// Camera
 	implementation(libs.androidx.camera.camera2)
+	implementation(libs.androidx.camera.lifecycle)
+	implementation(libs.androidx.camera.compose)
 
 	/// CORE SHIT
 	implementation(libs.androidx.core.ktx)

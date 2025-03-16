@@ -43,7 +43,7 @@ import m2sdl.lacuillere.viewmodel.MapViewModel
 fun HomeScreen(
 	model: MapViewModel,
 	restaurants: List<Restaurant>,
-	onNavigateToRestaurant: (r: Restaurant) -> Unit,
+	onNavigateToRestaurant: (Restaurant) -> Unit,
 ) {
 	var isViewingList by remember { mutableStateOf(false) }
 	val density = LocalDensity.current
@@ -70,7 +70,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeScreenNav(isViewingList: Boolean, onChange: (value: Boolean) -> Unit) {
+private fun HomeScreenNav(isViewingList: Boolean, onChange: (Boolean) -> Unit) {
 	Column(
 		modifier = Modifier
 			.fillMaxSize()

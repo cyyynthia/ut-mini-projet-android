@@ -26,7 +26,8 @@ class MapViewModel : ViewModel() {
 			_locationError.value = LocationError.LocationUnavailable
 		}
 
-		if (checkPermissions(
+		if (
+			checkPermissions(
 				context,
 				Manifest.permission.ACCESS_FINE_LOCATION,
 				Manifest.permission.ACCESS_COARSE_LOCATION
@@ -38,9 +39,11 @@ class MapViewModel : ViewModel() {
 						location?.let {
 							val userLatLng = LatLng(it.latitude, it.longitude)
 							_userLocation.value = userLatLng
+							_locationError.value = null
 						}
 					}
 			} catch (_: SecurityException) {
+				println("Permission revoked..?")
 				_locationError.value = LocationError.PermissionDenied
 			}
 		} else {

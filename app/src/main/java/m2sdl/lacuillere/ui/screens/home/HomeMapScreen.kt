@@ -26,8 +26,8 @@ import m2sdl.lacuillere.viewmodel.MapViewModel
 fun HomeMapScreen(
 	model: MapViewModel,
 	restaurants: List<Restaurant>,
-	onNavigateToRestaurant: (r: Restaurant) -> Unit,
-	onMapUnavailable: (e: MapViewModel.LocationError) -> Unit,
+	onNavigateToRestaurant: (Restaurant) -> Unit,
+	onMapUnavailable: (MapViewModel.LocationError) -> Unit,
 ) {
 	val userLocation by model.userLocation
 	val locationError by model.locationError

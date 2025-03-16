@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -14,11 +15,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.google.android.gms.maps.model.LatLng
 import m2sdl.lacuillere.data.Restaurant
-import m2sdl.lacuillere.ui.composables.RequestLocation
 import m2sdl.lacuillere.ui.screens.Home
 import m2sdl.lacuillere.ui.screens.Resto
-import m2sdl.lacuillere.ui.screens.RestoScreen
 import m2sdl.lacuillere.ui.screens.home.HomeScreen
+import m2sdl.lacuillere.ui.screens.resto.RestoScreen
 import m2sdl.lacuillere.ui.theme.LaCuillereTheme
 import m2sdl.lacuillere.viewmodel.MapViewModel
 import java.time.LocalTime
@@ -105,16 +105,14 @@ class MainActivity : ComponentActivity() {
 
 		setContent {
 			val navController = rememberNavController()
-			val mapModel = MapViewModel()
-
-			RequestLocation(mapModel)
+			val mapViewModel: MapViewModel by viewModels()
 
 			LaCuillereTheme {
 				Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
 					NavHost(navController = navController, startDestination = Home) {
 						composable<Home> {
 							HomeScreen(
-								model = mapModel,
+								model = mapViewModel,
 								restaurants = restaurants,
 								onNavigateToRestaurant = { navController.navigate(Resto(it.id)) }
 							)

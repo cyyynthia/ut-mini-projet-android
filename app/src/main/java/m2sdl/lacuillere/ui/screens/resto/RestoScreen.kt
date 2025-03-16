@@ -1,15 +1,12 @@
-package m2sdl.lacuillere.ui.screens
+package m2sdl.lacuillere.ui.screens.resto
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -56,10 +53,11 @@ fun RestoScreen(restaurant: Restaurant) {
 			}
 		}
 		when (selectedTabIndex) {
-			0 -> AProposTab(restaurant)
-			1 -> AvisTab(restaurant)
+			0 -> AboutTab(restaurant)
+			1 -> ReviewsTab(restaurant)
 		}
 	}
+
 	if (showDialog) {
 		Dialog(onDismissRequest = { showDialog = false }) {
 			Box(modifier = Modifier.fillMaxSize()) {
@@ -72,34 +70,4 @@ fun RestoScreen(restaurant: Restaurant) {
 			}
 		}
 	}
-}
-
-@Composable
-fun AProposTab(restaurant: Restaurant) {
-	Column(
-		modifier = Modifier
-			.padding(16.dp)
-			.verticalScroll(rememberScrollState())
-	) {
-		Spacer(modifier = Modifier.height(8.dp))
-		Text(text = "Adresse: ${restaurant.addressShort}", style = MaterialTheme.typography.bodyLarge)
-		Spacer(modifier = Modifier.height(8.dp))
-		Text(text = "Téléphone: ${restaurant.telephone}", style = MaterialTheme.typography.bodyLarge)
-		Spacer(modifier = Modifier.height(8.dp))
-		Text(
-			text = "Horaires d'ouverture aujourd'hui: ${restaurant.openingHours.first().first} - ${restaurant.openingHours.first().second} ",
-			style = MaterialTheme.typography.bodyLarge
-		)
-		Spacer(modifier = Modifier.height(8.dp))
-
-		//ajouter Description
-		//Gallerie
-		//Menu
-		//Ouverture détaillée + on click proposer réservation
-	}
-}
-
-@Composable
-fun AvisTab(restaurant: Restaurant) {
-
 }
