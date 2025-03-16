@@ -1,0 +1,42 @@
+package m2sdl.lacuillere.data.repository
+
+import m2sdl.lacuillere.data.Entity
+import java.util.UUID
+
+abstract class AbstractRepository<T : Entity> {
+	protected abstract val database: MutableList<T> // Whatever. It works.
+
+	fun findAll(): List<T> {
+		return database
+	}
+
+	fun findById(id: UUID): T? {
+		return database.find { it.id == id }
+	}
+
+	fun findBy(predicate: (T) -> Boolean): T? {
+		return database.find(predicate)
+	}
+
+	fun filterBy(predicate: (T) -> Boolean): List<T> {
+		return database.filter(predicate)
+	}
+
+	fun insert(entity: T): T {
+		database.add(entity)
+		return entity
+	}
+
+	fun update(entity: T): T {
+		val removed = database.removeIf { it.id == entity.id }
+		if (!removed) throw NoSuchElementException()
+		database.add(entity)
+		return entity
+	}
+
+	fun delete(entity: T): T {
+		val removed = database.removeIf { it.id == entity.id }
+		if (!removed) throw NoSuchElementException()
+		return entity
+	}
+}

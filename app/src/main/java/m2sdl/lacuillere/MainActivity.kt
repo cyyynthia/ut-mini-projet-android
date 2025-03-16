@@ -30,7 +30,6 @@ class MainActivity : ComponentActivity() {
 
 		val restaurants = listOf(
 			Restaurant(
-				"abcdef",
 				"Resto U' Le Canal",
 				"About",
 				"[...] Université de Toulouse",
@@ -42,7 +41,6 @@ class MainActivity : ComponentActivity() {
 				LatLng(43.5609537, 1.4718944)
 			),
 			Restaurant(
-				"ghijkl",
 				"Resto u' Le Theorème",
 				"About",
 				"[...] Université de Toulouse",
@@ -54,7 +52,6 @@ class MainActivity : ComponentActivity() {
 				LatLng(43.5622513, 1.463182)
 			),
 			Restaurant(
-				"abcde",
 				"Resto U' Le Canal",
 				"About",
 				"[...] Université de Toulouse",
@@ -66,7 +63,6 @@ class MainActivity : ComponentActivity() {
 				LatLng(43.5609537, 1.4718944)
 			),
 			Restaurant(
-				"ghijl",
 				"Resto u' Le Theorème",
 				"About",
 				"[...] Université de Toulouse",
@@ -78,7 +74,6 @@ class MainActivity : ComponentActivity() {
 				LatLng(43.5622513, 1.463182)
 			),
 			Restaurant(
-				"abcef",
 				"Resto U' Le Canal",
 				"About",
 				"[...] Université de Toulouse",
@@ -90,7 +85,6 @@ class MainActivity : ComponentActivity() {
 				LatLng(43.5609537, 1.4718944)
 			),
 			Restaurant(
-				"ghjkl",
 				"Resto u' Le Theorème",
 				"About",
 				"[...] Université de Toulouse",
