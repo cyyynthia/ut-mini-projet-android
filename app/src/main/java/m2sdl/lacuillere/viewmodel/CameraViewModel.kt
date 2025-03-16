@@ -17,10 +17,14 @@ import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
+import com.zomato.photofilters.SampleFilters
+import com.zomato.photofilters.imageprocessors.Filter
+import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubFilter
 import m2sdl.lacuillere.addListener
 
 class CameraViewModel : ViewModel() {
@@ -29,10 +33,22 @@ class CameraViewModel : ViewModel() {
 	private val _processing = mutableStateOf<Boolean>(false)
 	private val _image = mutableStateOf<Bitmap?>(null)
 
+	val filter = mutableStateOf(ImageFilter.None)
 	val activityTerminated: State<Boolean> = _activityTerminated
 	val surfaceRequest: State<SurfaceRequest?> = _surfaceRequest
 	val processing: State<Boolean> = _processing
 	val image: State<Bitmap?> = _image
+
+	private var clone: Bitmap? = null
+	val imageWithFilter = derivedStateOf {
+		clone?.recycle()
+
+		val image = image.value ?: return@derivedStateOf null
+		val subfilter = filter.value.subfilter ?: return@derivedStateOf image
+
+		clone = image.copy(image.config!!, true)
+		return@derivedStateOf subfilter.processFilter(clone)
+	}
 
 	private var camera: Camera? = null
 	private var cameraProvider: ProcessCameraProvider? = null
@@ -111,5 +127,12 @@ class CameraViewModel : ViewModel() {
 	fun discardPicture() {
 		_image.value = null
 		_surfaceRequest.value = null
+	}
+
+	enum class ImageFilter(val filterName: String, val subfilter: Filter?) {
+		None("Aucun", null),
+		BlackAndWhite("Noir et blanc", Filter().apply { addSubFilter(SaturationSubFilter(0f)) }),
+		Awestruck("Émerveillé", SampleFilters.getAweStruckVibeFilter()),
+		StarLit("Étoilé", SampleFilters.getStarLitFilter()),
 	}
 }

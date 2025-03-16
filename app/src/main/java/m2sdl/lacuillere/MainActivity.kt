@@ -24,6 +24,12 @@ import m2sdl.lacuillere.viewmodel.MapViewModel
 import java.time.LocalTime
 
 class MainActivity : ComponentActivity() {
+	companion object {
+		init {
+			System.loadLibrary("NativeImageProcessor")
+		}
+	}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		enableEdgeToEdge()

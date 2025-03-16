@@ -11,7 +11,6 @@ data class Restaurant(
 	val address: String,
 	val addressShort: String,
 	val telephone: String,
-	// List<[debut, fin]>
 	val openingHours: List<Pair<LocalTime, LocalTime>>,
 	val menu: String,
 	val photos: List<String>,

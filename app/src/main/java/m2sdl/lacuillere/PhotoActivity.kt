@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoFixHigh
@@ -164,19 +165,11 @@ class PhotoActivity : ComponentActivity() {
 									modifier = Modifier.padding(horizontal = 16.dp),
 									horizontalArrangement = Arrangement.spacedBy(8.dp)
 								) {
-									item {
+									items(CameraViewModel.ImageFilter.entries) {
 										FilterChip(
 											selected = false,
-											label = { Text("Blah") },
-											onClick = {},
-										)
-									}
-
-									item {
-										FilterChip(
-											selected = false,
-											label = { Text("Bleyh") },
-											onClick = {},
+											label = { Text(it.filterName) },
+											onClick = { cameraViewModel.filter.value = it },
 										)
 									}
 								}
@@ -195,8 +188,7 @@ class PhotoActivity : ComponentActivity() {
 					val animateBottom by animateDpAsState(bottomPadding)
 
 					if (permissionGranted) {
-						val img = image // Break out of delegation
-						when (img) {
+						when (image) {
 							null -> CameraPreview(viewModel = cameraViewModel)
 							else -> Column(
 								Modifier
@@ -204,7 +196,7 @@ class PhotoActivity : ComponentActivity() {
 									.fillMaxSize()
 							) {
 								Image(
-									img.asImageBitmap(),
+									cameraViewModel.imageWithFilter.value!!.asImageBitmap(),
 									modifier = Modifier.fillMaxSize(),
 									contentDescription = null,
 									contentScale = ContentScale.Fit,

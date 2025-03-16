@@ -15,6 +15,7 @@ googleServicesMaps = "19.1.0"
 kotlin = "2.1.10"
 kotlinxSerialization = "1.8.0"
 lifecycleRuntimeKtx = "2.8.7"
+zomatoPhotoFilters = "1.0.2"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
@@ -41,6 +42,7 @@ google-maps-compose = { group = "com.google.maps.android", name = "maps-compose"
 google-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "googleServicesLocation" }
 google-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "googleServicesMaps" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
+zomato-photo-filters = { group = "com.github.zomato", name = "androidphotofilters", version.ref = "zomatoPhotoFilters" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
