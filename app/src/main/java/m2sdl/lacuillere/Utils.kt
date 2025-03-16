@@ -28,7 +28,7 @@ fun <V> ListenableFuture<V>.addListener(executor: Executor, fn: () -> Unit) = th
 // "implements Parcelable" my ass
 fun Bitmap.asCompressedByteArray(): ByteArray {
 	val os = ByteArrayOutputStream()
-	compress(Bitmap.CompressFormat.JPEG, 80, os)
+	compress(Bitmap.CompressFormat.JPEG, 90, os)
 	return os.toByteArray()
 }
 

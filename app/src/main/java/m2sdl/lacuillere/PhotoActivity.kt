@@ -66,6 +66,12 @@ import m2sdl.lacuillere.ui.theme.LaCuillereTheme
 import m2sdl.lacuillere.viewmodel.CameraViewModel
 
 class PhotoActivity : ComponentActivity() {
+	companion object {
+		init {
+			System.loadLibrary("NativeImageProcessor")
+		}
+	}
+
 	private val permissionGranted = mutableStateOf(false)
 
 	@OptIn(ExperimentalMaterial3Api::class)
@@ -143,7 +149,10 @@ class PhotoActivity : ComponentActivity() {
 									Button(
 										onClick = {
 											val intent = Intent()
-											intent.putExtra("photo", image?.asCompressedByteArray())
+											intent.putExtra(
+												"photo",
+												cameraViewModel.imageWithFilter.value?.asCompressedByteArray()
+											)
 											setResult(RESULT_OK, intent)
 											finish()
 										}
@@ -167,8 +176,8 @@ class PhotoActivity : ComponentActivity() {
 								) {
 									items(CameraViewModel.ImageFilter.entries) {
 										FilterChip(
-											selected = false,
 											label = { Text(it.filterName) },
+											selected = cameraViewModel.filter.value == it,
 											onClick = { cameraViewModel.filter.value = it },
 										)
 									}
