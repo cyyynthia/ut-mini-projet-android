@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.google.android.gms.maps.model.LatLng
 import m2sdl.lacuillere.data.Restaurant
+import m2sdl.lacuillere.data.repository.RepositoryLocator
 import m2sdl.lacuillere.ui.screens.Home
 import m2sdl.lacuillere.ui.screens.Resto
 import m2sdl.lacuillere.ui.screens.home.HomeScreen
@@ -27,6 +28,8 @@ class MainActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		enableEdgeToEdge()
+
+		RepositoryLocator.init(savedInstanceState)
 
 		val restaurants = listOf(
 			Restaurant(
@@ -121,5 +124,10 @@ class MainActivity : ComponentActivity() {
 				}
 			}
 		}
+	}
+
+	override fun onSaveInstanceState(outState: Bundle) {
+		RepositoryLocator.save(outState) // lmao²
+		super.onSaveInstanceState(outState)
 	}
 }

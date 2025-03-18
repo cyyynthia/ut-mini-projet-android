@@ -3,9 +3,8 @@ package m2sdl.lacuillere.data.repository
 import m2sdl.lacuillere.data.Entity
 import java.util.UUID
 
-abstract class AbstractRepository<T : Entity> {
-	protected abstract val database: MutableList<T> // Whatever. It works.
-
+// Whatever. It works. lmao
+abstract class AbstractRepository<T : Entity>(protected val database: MutableList<T>) {
 	fun findAll(): List<T> {
 		return database
 	}

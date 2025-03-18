@@ -2,8 +2,8 @@ package m2sdl.lacuillere.data.repository
 
 import m2sdl.lacuillere.data.User
 
-class UserRepository : AbstractRepository<User>() {
-	override val database = mutableListOf(*BASE_DATA)
+class UserRepository(initialData: MutableList<User>?) :
+	AbstractRepository<User>(initialData ?: mutableListOf(*BASE_DATA)) {
 
 	companion object {
 		// val PAYOU = User(name = "Payou", avatar = TODO())

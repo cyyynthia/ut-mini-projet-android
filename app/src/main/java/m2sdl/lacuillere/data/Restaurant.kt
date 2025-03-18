@@ -1,8 +1,10 @@
 package m2sdl.lacuillere.data
 
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.parcelize.Parcelize
 import java.time.LocalTime
 
+@Parcelize
 data class Restaurant(
 	val name: String,
 	val about: String,
