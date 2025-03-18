@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -29,7 +30,10 @@ fun RestoScreen(restaurant: Restaurant) {
 	var showDialog by remember { mutableStateOf(false) }
 	val tabs = listOf("À propos", "Avis")
 
+
 	Column(modifier = Modifier.fillMaxSize()) {
+
+
 		Box {
 			AsyncImage(
 				model = "https://pbs.twimg.com/media/FgagCUvWAAIhOgR.jpg",
@@ -57,6 +61,12 @@ fun RestoScreen(restaurant: Restaurant) {
 		when (selectedTabIndex) {
 			0 -> AboutTab(restaurant)
 			1 -> ReviewsTab(restaurant)
+		}
+		Button(
+			onClick = {  },
+			modifier = Modifier.padding(16.dp)
+		) {
+			Text("Réserver")
 		}
 	}
 
