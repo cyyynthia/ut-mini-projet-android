@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.util.Log
 import android.util.Size
-import android.widget.Toast
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -26,6 +25,7 @@ import com.zomato.photofilters.SampleFilters
 import com.zomato.photofilters.imageprocessors.Filter
 import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubFilter
 import m2sdl.lacuillere.addListener
+import m2sdl.lacuillere.toast
 
 class CameraViewModel : ViewModel() {
 	private val _activityTerminated = mutableStateOf(false)
@@ -78,8 +78,7 @@ class CameraViewModel : ViewModel() {
 			} catch (ex: Exception) {
 				_activityTerminated.value = true
 				Log.e("LaCuillèrePhoto", "Use case binding failed", ex)
-				Toast.makeText(ctx, "Une erreur est survenue lors du démarrage de l'appareil photo", Toast.LENGTH_LONG)
-					.show()
+				ctx.toast("Une erreur est survenue lors du démarrage de l'appareil photo")
 			}
 		}
 	}
@@ -114,11 +113,7 @@ class CameraViewModel : ViewModel() {
 				override fun onError(exception: ImageCaptureException) {
 					_processing.value = false
 					_activityTerminated.value = true
-					Toast.makeText(
-						ctx,
-						exception.localizedMessage ?: "Une erreur est survenue lors de la prise de la photo.",
-						Toast.LENGTH_LONG
-					).show()
+					ctx.toast(exception.localizedMessage ?: "Une erreur est survenue lors de la prise de la photo.")
 				}
 			}
 		)

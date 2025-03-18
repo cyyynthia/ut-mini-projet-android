@@ -47,9 +47,11 @@ fun CameraPreview(
 			verticalArrangement = Arrangement.Center,
 			horizontalAlignment = Alignment.CenterHorizontally,
 		) {
-			Box(Modifier
-				.aspectRatio(3f / 4f)
-				.fillMaxSize()) {
+			Box(
+				Modifier
+					.aspectRatio(3f / 4f)
+					.fillMaxSize()
+			) {
 				CameraXViewfinder(
 					surfaceRequest = request,
 				)

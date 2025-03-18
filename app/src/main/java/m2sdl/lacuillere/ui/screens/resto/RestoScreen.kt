@@ -63,7 +63,7 @@ fun RestoScreen(restaurant: Restaurant) {
 			1 -> ReviewsTab(restaurant)
 		}
 		Button(
-			onClick = {  },
+			onClick = { },
 			modifier = Modifier.padding(16.dp)
 		) {
 			Text("Réserver")

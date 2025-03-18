@@ -4,24 +4,25 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.maps.android.compose.CameraPositionState
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import java.io.ByteArrayOutputStream
-import java.util.UUID
 import java.util.concurrent.Executor
 
 fun checkPermissions(ctx: Context, vararg permissions: String): Boolean {
 	return permissions.any { ContextCompat.checkSelfPermission(ctx, it) == PackageManager.PERMISSION_GRANTED }
+}
+
+fun Context.toast(text: String, duration: Int = Toast.LENGTH_LONG) {
+	Toast.makeText(this, text, duration).show()
+}
+
+fun Context.notImplementedToast() {
+	toast("Cette fonctionnalité n'est pas implémentée.", Toast.LENGTH_SHORT)
 }
 
 fun CameraPositionState.isNull() = position.target.latitude == 0.0 && position.target.longitude == 0.0
@@ -43,15 +44,3 @@ fun Bitmap.asCompressedByteArray(): ByteArray {
 fun ByteArray.asBitmap(): Bitmap {
 	return BitmapFactory.decodeByteArray(this, 0, this.size)
 }
-
-// https://github.com/perracodex/Kotlinx-UUID-Serializer
-
-object UUIDSerializer : KSerializer<UUID> {
-	override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("UUID", PrimitiveKind.STRING)
-
-	override fun serialize(encoder: Encoder, value: UUID) = encoder.encodeString(value.toString())
-
-	override fun deserialize(decoder: Decoder): UUID = UUID.fromString(decoder.decodeString())
-}
-
-typealias SUUID = @Serializable(with = UUIDSerializer::class) UUID

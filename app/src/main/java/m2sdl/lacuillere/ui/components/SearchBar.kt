@@ -1,6 +1,5 @@
 package m2sdl.lacuillere.ui.components
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.absoluteOffset
@@ -28,15 +27,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import m2sdl.lacuillere.notImplementedToast
 import androidx.compose.material3.SearchBar as MaterialSearchBar
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
-fun SearchBar() {
+fun SearchBar(onOpenNav: () -> Unit) {
 	var expanded by rememberSaveable { mutableStateOf(false) }
 
 	if (expanded) {
-		Toast.makeText(LocalContext.current, "Cette fonctionnalité n'est pas implémentée.", Toast.LENGTH_SHORT).show()
+		LocalContext.current.notImplementedToast()
 		LocalSoftwareKeyboardController.current?.hide()
 		LocalFocusManager.current.clearFocus(true)
 		expanded = false
@@ -64,7 +64,7 @@ fun SearchBar() {
 						Text("Rechercher un restaurant...")
 					},
 					leadingIcon = {
-						IconButton(onClick = {}) {
+						IconButton(onClick = onOpenNav) {
 							Icon(
 								imageVector = Icons.Default.Menu,
 								contentDescription = null,

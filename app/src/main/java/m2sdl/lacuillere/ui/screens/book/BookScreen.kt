@@ -1,14 +1,34 @@
 package m2sdl.lacuillere.ui.screens.book
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.text.input.TextFieldValue
-import m2sdl.lacuillere.data.Restaurant
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TimeInput
+import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
+import m2sdl.lacuillere.data.Restaurant
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,15 +94,15 @@ fun RestoBookScreen(restaurant: Restaurant) {
 
 		TimeInput(
 			state = timePickerState,
-			modifier = Modifier.
-				minimumInteractiveComponentSize().
-				align(Alignment.CenterHorizontally).
-				padding(top = 8.dp, bottom = 16.dp)
+			modifier = Modifier
+				.minimumInteractiveComponentSize()
+				.align(Alignment.CenterHorizontally)
+				.padding(top = 8.dp, bottom = 16.dp)
 		)
 
 		Button(
 			onClick = { //Faire page resto reserver
-				  },
+			},
 			modifier = Modifier.fillMaxWidth()
 		) {
 			Text("Réserver")

@@ -1,6 +1,5 @@
 package m2sdl.lacuillere.ui.screens.home
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,6 +18,7 @@ import m2sdl.lacuillere.R
 import m2sdl.lacuillere.applyTo
 import m2sdl.lacuillere.data.Restaurant
 import m2sdl.lacuillere.isNull
+import m2sdl.lacuillere.toast
 import m2sdl.lacuillere.ui.composables.RequestLocation
 import m2sdl.lacuillere.viewmodel.MapViewModel
 
@@ -37,20 +37,10 @@ fun HomeMapScreen(
 	locationError?.let {
 		when (it) {
 			MapViewModel.LocationError.LocationUnavailable ->
-				Toast.makeText(
-					LocalContext.current,
-					"Aucun service de localisation est activé.",
-					Toast.LENGTH_LONG
-				)
-					.show()
+				LocalContext.current.toast("Aucun service de localisation est activé.")
 
 			MapViewModel.LocationError.PermissionDenied ->
-				Toast.makeText(
-					LocalContext.current,
-					"Vous n'avez pas accordé la permission d'accéder à votre position.",
-					Toast.LENGTH_LONG
-				)
-					.show()
+				LocalContext.current.toast("Vous n'avez pas accordé la permission d'accéder à votre position.")
 		}
 
 		if (cameraPositionState.isNull()) {
