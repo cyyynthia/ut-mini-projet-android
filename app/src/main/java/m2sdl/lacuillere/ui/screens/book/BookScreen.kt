@@ -56,7 +56,7 @@ fun RestoBookScreen(restaurant: Restaurant) {
 		Text(
 			text = "Réserver au ${restaurant.name}",
 			style = MaterialTheme.typography.headlineLarge,
-			modifier = Modifier.padding(bottom = 16.dp)
+			modifier = Modifier.padding(bottom = 16.dp, top = 16.dp)
 		)
 		OutlinedTextField(
 			value = name,

@@ -25,7 +25,7 @@ import coil3.compose.AsyncImage
 import m2sdl.lacuillere.data.Restaurant
 
 @Composable
-fun RestoScreen(restaurant: Restaurant) {
+fun RestoScreen(restaurant: Restaurant, onNavigateToBook: (Restaurant) -> Unit){
 	var selectedTabIndex by remember { mutableStateOf(0) }
 	var showDialog by remember { mutableStateOf(false) }
 	val tabs = listOf("À propos", "Avis")
@@ -63,7 +63,7 @@ fun RestoScreen(restaurant: Restaurant) {
 			1 -> ReviewsTab(restaurant)
 		}
 		Button(
-			onClick = { },
+			onClick = { onNavigateToBook(restaurant) },
 			modifier = Modifier.padding(16.dp)
 		) {
 			Text("Réserver")

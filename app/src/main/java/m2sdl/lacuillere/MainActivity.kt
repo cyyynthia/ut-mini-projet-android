@@ -16,12 +16,14 @@ import androidx.navigation.toRoute
 import com.google.android.gms.maps.model.LatLng
 import m2sdl.lacuillere.data.Restaurant
 import m2sdl.lacuillere.data.repository.RepositoryLocator
+import m2sdl.lacuillere.ui.screens.Book
 import m2sdl.lacuillere.ui.screens.Home
 import m2sdl.lacuillere.ui.screens.ReservationHistory
 import m2sdl.lacuillere.ui.screens.ReservationHistoryScreen
 import m2sdl.lacuillere.ui.screens.Resto
 import m2sdl.lacuillere.ui.screens.ReviewHistory
 import m2sdl.lacuillere.ui.screens.ReviewHistoryScreen
+import m2sdl.lacuillere.ui.screens.book.RestoBookScreen
 import m2sdl.lacuillere.ui.screens.home.HomeScreen
 import m2sdl.lacuillere.ui.screens.resto.RestoScreen
 import m2sdl.lacuillere.ui.theme.LaCuillereTheme
@@ -124,7 +126,13 @@ class MainActivity : ComponentActivity() {
 						composable<Resto> { backStackEntry ->
 							val resto: Resto = backStackEntry.toRoute()
 							val restaurant = restaurants.find { it.id == resto.uuid }
-							restaurant?.let { RestoScreen(it) } ?: navController.navigate(Home)
+							restaurant?.let { RestoScreen(restaurant = it,onNavigateToBook = { navController.navigate(Book(it.id)) } ) } ?: navController.navigate(Home)
+						}
+
+						composable<Book> { backStackEntry ->
+							val resto: Resto = backStackEntry.toRoute()
+							val restaurant = restaurants.find { it.id == resto.uuid }
+							restaurant?.let { RestoBookScreen(restaurant) } ?: navController.navigate(Home)
 						}
 
 						composable<ReservationHistory> {
