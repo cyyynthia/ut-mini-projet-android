@@ -1,0 +1,73 @@
+THIRD PARTY LICENSE INFORMATION
+===============================
+
+The following files are from the Microsoft Fluent Emoji project, licensed under the MIT license
+- app/src/main/res/drawable/msft_fluent_*
+
+The project can be found here: https://github.com/microsoft/fluentui-emoji
+Below is a copy of the license text.
+
+==========
+	MIT License
+
+	Copyright (c) Microsoft Corporation.
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE
+==========
+
+========================================================================================================================
+
+The following files are derived from Smart Tool Factory's Compose Drawing App, licensed under the MIT license
+- app/src/main/java/m2sdl/lacuillere/viewmodel/CanvasViewModel.kt
+- app/src/main/java/m2sdl/lacuillere/ui/components/DrawMenus.kt
+- app/src/main/java/m2sdl/lacuillere/ui/components/DrawCanvas.kt
+- app/src/main/java/m2sdl/lacuillere/gesture/AwaitDragMotionModifier.kt
+
+The project can be found here: https://github.com/microsoft/fluentui-emoji
+Below is a copy of the license text.
+
+==========
+	MIT License
+
+	Copyright (c) 2023 Smart Tool Factory
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+==========
+
+========================================================================================================================
+
+Thank you to all the open-source software that made this possible.
+
+========================================================================================================================

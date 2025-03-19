@@ -18,15 +18,15 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.platform.LocalContext
 import m2sdl.lacuillere.gesture.dragMotionEvent
 import m2sdl.lacuillere.viewmodel.CanvasViewModel
 
 @Composable
 fun DrawCanvas(bitmap: ImageBitmap, model: CanvasViewModel) {
+	val ctx = LocalContext.current
 	val aspectRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
 
 	val drawModifier = Modifier
@@ -34,18 +34,9 @@ fun DrawCanvas(bitmap: ImageBitmap, model: CanvasViewModel) {
 		.aspectRatio(aspectRatio)
 		.background(Color.White)
 		.dragMotionEvent(
-			onDragStart = { pointerInputChange ->
-				model.dragStart(pointerInputChange)
-				if (pointerInputChange.pressed != pointerInputChange.previousPressed) pointerInputChange.consume()
-			},
-			onDrag = { pointerInputChange ->
-				model.drag(pointerInputChange)
-				if (pointerInputChange.positionChange() != Offset.Zero) pointerInputChange.consume()
-			},
-			onDragEnd = { pointerInputChange ->
-				model.dragEnd()
-				if (pointerInputChange.pressed != pointerInputChange.previousPressed) pointerInputChange.consume()
-			}
+			onDragStart = { pointerInputChange -> model.dragStart(ctx, pointerInputChange) },
+			onDrag = { pointerInputChange -> model.drag(pointerInputChange) },
+			onDragEnd = { pointerInputChange -> model.dragEnd(pointerInputChange) }
 		)
 
 	Canvas(modifier = drawModifier) {
@@ -55,6 +46,6 @@ fun DrawCanvas(bitmap: ImageBitmap, model: CanvasViewModel) {
 		model.canvasSize = drawContext.size
 
 		model.tickMotionEvent()
-		model.draw(this, bitmap)
+		model.draw(ctx, this, bitmap)
 	}
 }

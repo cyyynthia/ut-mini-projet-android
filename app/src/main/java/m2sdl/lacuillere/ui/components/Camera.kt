@@ -83,7 +83,7 @@ fun ShutterButton(viewModel: CameraViewModel, ambientLight: Float) {
 			elevation = ButtonDefaults.buttonElevation(2.dp),
 			colors = ButtonDefaults.buttonColors(containerColor = Color.White),
 			shape = RoundedCornerShape(48.dp),
-			onClick = { viewModel.takePicture(ctx, ambientLight); println(ambientLight) },
+			onClick = { viewModel.takePicture(ctx, ambientLight) },
 		) {}
 	}
 }

@@ -11,6 +11,7 @@
 
 package m2sdl.lacuillere.viewmodel
 
+import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -21,20 +22,31 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.round
 import androidx.compose.ui.unit.toIntSize
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.ViewModel
 import m2sdl.lacuillere.data.PathProperties
 import m2sdl.lacuillere.gesture.MotionEvent
+import m2sdl.lacuillere.resources.Sticker
+import java.util.Random
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class CanvasViewModel : ViewModel() {
+	private val rng = Random()
 	/**
 	 * Draw mode or touch mode
 	 */
@@ -88,12 +100,16 @@ class CanvasViewModel : ViewModel() {
 	 */
 	val currentPathProperty = mutableStateOf(PathProperties())
 
+	private val stickers = mutableStateListOf<Triple<Sticker, Offset, Float>>()
+	val selectedSticker = mutableStateOf<Sticker>(Sticker.HeartEyes)
+
 	var canvasSize: Size = Size(300f, 400f)
+
 
 	fun tickMotionEvent() {
 		when (motionEvent) {
 			MotionEvent.Down -> {
-				if (_drawMode.value != DrawMode.Touch) {
+				if (_drawMode.value != DrawMode.Move) {
 					currentPath.moveTo(currentPosition.x, currentPosition.y)
 				}
 
@@ -102,7 +118,7 @@ class CanvasViewModel : ViewModel() {
 			}
 
 			MotionEvent.Move -> {
-				if (_drawMode.value != DrawMode.Touch) {
+				if (_drawMode.value != DrawMode.Move) {
 					currentPath.quadraticTo(
 						previousPosition.x,
 						previousPosition.y,
@@ -115,7 +131,7 @@ class CanvasViewModel : ViewModel() {
 			}
 
 			MotionEvent.Up -> {
-				if (_drawMode.value != DrawMode.Touch) {
+				if (_drawMode.value != DrawMode.Move) {
 					currentPath.lineTo(currentPosition.x, currentPosition.y)
 
 					// Pointer is up save current path
@@ -141,16 +157,23 @@ class CanvasViewModel : ViewModel() {
 		}
 	}
 
-	fun dragStart(event: PointerInputChange) {
+	fun dragStart(ctx: Context, event: PointerInputChange) {
+		if (event.pressed != event.previousPressed) event.consume()
+		if (_drawMode.value == DrawMode.Idle) return
+		if (_drawMode.value == DrawMode.Sticker) return applyOrRemoveSticker(ctx, event)
+
 		motionEvent = MotionEvent.Down
 		currentPosition = event.position
 	}
 
 	fun drag(event: PointerInputChange) {
+		if (event.positionChange() != Offset.Zero) event.consume()
+		if (_drawMode.value == DrawMode.Idle || _drawMode.value == DrawMode.Sticker) return
+
 		motionEvent = MotionEvent.Move
 		currentPosition = event.position
 
-		if (_drawMode.value == DrawMode.Touch) {
+		if (_drawMode.value == DrawMode.Move) {
 			val change = event.positionChange()
 			paths.forEach { entry ->
 				val path: Path = entry.first
@@ -161,7 +184,10 @@ class CanvasViewModel : ViewModel() {
 		}
 	}
 
-	fun dragEnd() {
+	fun dragEnd(event: PointerInputChange) {
+		if (event.pressed != event.previousPressed) event.consume()
+		if (_drawMode.value == DrawMode.Idle || _drawMode.value == DrawMode.Sticker) return
+
 		motionEvent = MotionEvent.Up
 	}
 
@@ -196,18 +222,19 @@ class CanvasViewModel : ViewModel() {
 		_drawMode.value = DrawMode.Draw
 		paths.clear()
 		pathsUndone.clear()
+		stickers.clear()
 
 		currentPath = Path()
 		currentPathProperty.value = PathProperties()
 	}
 
-	fun draw(scope: DrawScope, image: ImageBitmap) {
+	fun draw(ctx: Context, scope: DrawScope, image: ImageBitmap) {
 		with(scope.drawContext.canvas.nativeCanvas) {
 			val checkPoint = saveLayer(null, null)
 
 			scope.drawImage(image, dstSize = scope.drawContext.size.toIntSize())
+			scope.draw0(ctx)
 
-			draw0(scope)
 			if (motionEvent != MotionEvent.Idle) {
 				scope.drawPath(
 					color = currentPathProperty.value.color,
@@ -224,29 +251,43 @@ class CanvasViewModel : ViewModel() {
 		}
 	}
 
-	fun draw(bitmap: ImageBitmap): ImageBitmap {
+	fun draw(ctx: Context, bitmap: ImageBitmap): ImageBitmap {
 		val drawScope = CanvasDrawScope()
 		val size = canvasSize.toIntSize()
 
 		val finalImage = ImageBitmap(size.width, size.height)
 
 		drawScope.draw(
-			density = Density(1f),
+			density = Density(ctx),
 			layoutDirection = LayoutDirection.Ltr,
 			canvas = Canvas(finalImage),
 			size = canvasSize,
 		) {
-			draw(this, bitmap)
+			draw(ctx, this, bitmap)
 		}
 
 		return finalImage
 	}
 
-	private fun draw0(scope: DrawScope) {
-		paths.forEach { scope.drawPath(it.first, it.second) }
+	private fun DrawScope.draw0(ctx: Context) {
+		val stickerSize = 72.dp.roundToPx()
+		val stickerCenter = IntOffset(stickerSize / 2, stickerSize / 2)
+
+		paths.forEach { drawPath(it.first, it.second) }
+		stickers.forEach {
+			val stickerImage = ctx.resources.getDrawable(it.first.resource, null)
+				.toBitmap(stickerSize, stickerSize)
+				.asImageBitmap()
+
+			val position = it.second.round().minus(stickerCenter)
+
+			withTransform({ rotate(degrees = it.third, pivot = it.second) }) {
+				drawImage(stickerImage, dstOffset = position)
+			}
+		}
 
 		if (motionEvent != MotionEvent.Idle) {
-			scope.drawPath(currentPath, currentPathProperty.value)
+			drawPath(currentPath, currentPathProperty.value)
 		}
 	}
 
@@ -263,7 +304,33 @@ class CanvasViewModel : ViewModel() {
 		)
 	}
 
+	private fun applyOrRemoveSticker(ctx: Context, event: PointerInputChange) {
+		val stickerSize = Density(ctx).run { 72.dp.roundToPx() }
+		val threshold = stickerSize / 2f
+
+		val removed = stickers.removeIf {
+			val diff = it.second.minus(event.position)
+			val dst = sqrt(diff.x.pow(2) + diff.y.pow(2))
+			dst <= threshold
+		}
+
+		if (!removed) {
+			val rotateMax = 20f
+
+			stickers.add(
+				Triple(
+					selectedSticker.value,
+					event.position,
+					(rng.nextFloat() * rotateMax * 2) - rotateMax
+				)
+			)
+		}
+	}
+
 	enum class DrawMode {
-		Draw, Touch
+		Idle,
+		Draw,
+		Move,
+		Sticker,
 	}
 }

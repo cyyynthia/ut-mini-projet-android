@@ -96,8 +96,8 @@ fun DrawingPropertiesMenu(
 		}
 
 		FilledIconToggleButton(
-			checked = currentDrawMode == DrawMode.Touch,
-			onCheckedChange = { model.setDrawMode(DrawMode.Touch) },
+			checked = currentDrawMode == DrawMode.Move,
+			onCheckedChange = { model.setDrawMode(DrawMode.Move) },
 		) {
 			Icon(Icons.Filled.TouchApp, contentDescription = null)
 		}
