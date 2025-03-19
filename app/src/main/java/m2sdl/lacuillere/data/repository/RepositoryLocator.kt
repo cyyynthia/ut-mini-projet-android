@@ -20,6 +20,7 @@ object RepositoryLocator {
 	fun getReservationRepository() = reservationRepository
 
 	fun init(bundle: Bundle?) {
+		// rofl
 		val user = bundle?.getParcelableMutableList<User>("user")
 		val resto = bundle?.getParcelableMutableList<Restaurant>("resto")
 		val review = bundle?.getParcelableMutableList<Review>("review")
@@ -32,6 +33,10 @@ object RepositoryLocator {
 	}
 
 	fun save(bundle: Bundle) {
+		// wdym the app's bundle isn't the right tool for that?
+		// CITE ME THE LAW THAT PROHIBITS ME FROM DOING SO
+		// yeah, that's what I thought :) :) :)
+		// BE CRIMES DO GAY or something idk
 		bundle.putParcelableArray("user", userRepository.findAll().toTypedArray())
 		bundle.putParcelableArray("resto", restaurantRepository.findAll().toTypedArray())
 		bundle.putParcelableArray("review", reviewRepository.findAll().toTypedArray())

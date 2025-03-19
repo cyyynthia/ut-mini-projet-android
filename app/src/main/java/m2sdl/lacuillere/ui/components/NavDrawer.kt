@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Help
+import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.Reviews
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.HorizontalDivider
@@ -17,12 +19,15 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import m2sdl.lacuillere.data.repository.RepositoryLocator
 import m2sdl.lacuillere.notImplementedToast
 
 @Composable
@@ -33,9 +38,12 @@ fun NavDrawer(
 	content: @Composable () -> Unit,
 ) {
 	val ctx = LocalContext.current
+	val myself = RepositoryLocator.getUserRepository().findMyself()
+	val gesturesEnabled by derivedStateOf { state.isOpen }
 
 	ModalNavigationDrawer(
 		drawerState = state,
+		gesturesEnabled = gesturesEnabled,
 		drawerContent = {
 			ModalDrawerSheet {
 				Spacer(Modifier.height(12.dp))
@@ -49,12 +57,12 @@ fun NavDrawer(
 					contentScale = ContentScale.Crop
 				)
 				Text(
-					"Rayou",
+					myself.name,
 					modifier = Modifier.padding(horizontal = 16.dp),
 					style = MaterialTheme.typography.titleLarge
 				)
 				Text(
-					"rayou@email.example",
+					"email@domain.example",
 					modifier = Modifier.padding(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
 					style = MaterialTheme.typography.titleSmall
 				)
@@ -64,11 +72,13 @@ fun NavDrawer(
 				NavigationDrawerItem(
 					label = { Text("Réservations") },
 					selected = false,
+					icon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
 					onClick = onNavigateReservationHistory,
 				)
 				NavigationDrawerItem(
 					label = { Text("Avis") },
 					selected = false,
+					icon = { Icon(Icons.Outlined.Reviews, contentDescription = null) },
 					onClick = onNavigateReviewHistory,
 				)
 

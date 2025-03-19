@@ -19,13 +19,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -45,7 +43,6 @@ import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.FilterChip
@@ -78,6 +75,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import m2sdl.lacuillere.resources.Sticker
 import m2sdl.lacuillere.ui.components.BackButton
 import m2sdl.lacuillere.ui.components.CameraPreview
+import m2sdl.lacuillere.ui.components.CircularLoadingOverlay
 import m2sdl.lacuillere.ui.components.DrawCanvas
 import m2sdl.lacuillere.ui.components.DrawingPropertiesMenu
 import m2sdl.lacuillere.ui.components.ShutterButton
@@ -331,20 +329,6 @@ class PhotoActivity : ComponentActivity(), SensorEventListener {
 								)
 							}
 						}
-
-						if (processing) {
-							Column(
-								modifier = Modifier
-									.fillMaxSize()
-									.absoluteOffset(0.dp, 0.dp)
-									.background(Color.Black.copy(alpha = 0.5f)),
-								horizontalAlignment = Alignment.CenterHorizontally,
-								verticalArrangement = Arrangement.Center,
-							) {
-								CircularProgressIndicator()
-							}
-						}
-
 						if (image == null && !processing) {
 							ShutterButton(
 								viewModel = cameraViewModel,
@@ -353,6 +337,8 @@ class PhotoActivity : ComponentActivity(), SensorEventListener {
 						}
 					}
 				}
+
+				CircularLoadingOverlay(processing)
 			}
 		}
 	}

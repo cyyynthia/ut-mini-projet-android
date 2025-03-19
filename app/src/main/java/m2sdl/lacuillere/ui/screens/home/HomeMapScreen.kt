@@ -1,11 +1,15 @@
 package m2sdl.lacuillere.ui.screens.home
 
+import android.app.Activity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
@@ -23,8 +27,29 @@ import m2sdl.lacuillere.ui.composables.RequestLocation
 import m2sdl.lacuillere.viewmodel.MapViewModel
 
 @Composable
+fun LightSystemBar(isDrawerOrListOpen: Boolean) {
+	val view = LocalView.current
+	val window = (view.context as? Activity)?.window ?: return
+
+	DisposableEffect(view, window, isDrawerOrListOpen) {
+		val insetsController = WindowCompat.getInsetsController(window, view)
+		val originalStatusBars = insetsController.isAppearanceLightStatusBars
+		val originalNavigationBars = insetsController.isAppearanceLightNavigationBars
+
+		insetsController.isAppearanceLightStatusBars = !isDrawerOrListOpen
+		insetsController.isAppearanceLightNavigationBars = !isDrawerOrListOpen
+
+		onDispose {
+			insetsController.isAppearanceLightStatusBars = originalStatusBars
+			insetsController.isAppearanceLightNavigationBars = originalNavigationBars
+		}
+	}
+}
+
+@Composable
 fun HomeMapScreen(
 	model: MapViewModel,
+	isDrawerOrListOpen: Boolean,
 	restaurants: List<Restaurant>,
 	onNavigateToRestaurant: (Restaurant) -> Unit,
 	onMapUnavailable: (MapViewModel.LocationError) -> Unit,
@@ -52,6 +77,8 @@ fun HomeMapScreen(
 		userLocation?.applyTo(cameraPositionState)
 			?: RequestLocation(model)
 	} else {
+		LightSystemBar(isDrawerOrListOpen)
+
 		GoogleMap(
 			modifier = Modifier.fillMaxSize(),
 			cameraPositionState = cameraPositionState,

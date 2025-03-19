@@ -4,6 +4,7 @@ import m2sdl.lacuillere.data.Entity
 import java.util.UUID
 
 // Whatever. It works. lmao
+// And yes, I don't even use a map to *at least* have decent retrieval from IDs. rofl
 abstract class AbstractRepository<T : Entity>(protected val database: MutableList<T>) {
 	fun findAll(): List<T> {
 		return database

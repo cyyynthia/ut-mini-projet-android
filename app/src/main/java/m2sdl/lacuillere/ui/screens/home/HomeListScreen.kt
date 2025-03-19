@@ -59,7 +59,6 @@ fun HomeListScreen(restaurants: List<Restaurant>, onNavigateToRestaurant: (r: Re
 					shape = RoundedCornerShape(16.dp),
 					modifier = Modifier
 						.fillMaxWidth()
-						.height(200.dp)
 						.clickable { onNavigateToRestaurant(restaurant) }
 
 				) {
@@ -74,7 +73,6 @@ fun HomeListScreen(restaurants: List<Restaurant>, onNavigateToRestaurant: (r: Re
 							contentScale = ContentScale.Crop
 						)
 						Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-
 							Text(
 								text = restaurant.name,
 								style = MaterialTheme.typography.bodyLarge,

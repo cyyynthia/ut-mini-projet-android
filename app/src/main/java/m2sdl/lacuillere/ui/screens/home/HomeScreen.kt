@@ -30,8 +30,8 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,7 +55,7 @@ fun HomeScreen(
 	val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 	val scope = rememberCoroutineScope()
 
-	var isViewingList by remember { mutableStateOf(false) }
+	var isViewingList by rememberSaveable { mutableStateOf(false) }
 	val density = LocalDensity.current
 
 	NavDrawer(
@@ -70,6 +70,7 @@ fun HomeScreen(
 			// See also: https://stackoverflow.com/a/73808783
 
 			HomeMapScreen(
+				isDrawerOrListOpen = drawerState.isOpen || isViewingList,
 				model = model,
 				restaurants = restaurants,
 				onNavigateToRestaurant = onNavigateToRestaurant,

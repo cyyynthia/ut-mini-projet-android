@@ -9,7 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun BackButton(onBack: (() -> Unit), contentDescription: String?, modifier: Modifier = Modifier) {
+fun BackButton(
+	onBack: (() -> Unit),
+	contentDescription: String?,
+	modifier: Modifier = Modifier,
+) {
 	BackHandler(onBack = onBack)
 	IconButton(onClick = onBack, modifier = modifier) {
 		Icon(
