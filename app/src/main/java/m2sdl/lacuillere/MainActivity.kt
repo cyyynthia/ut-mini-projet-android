@@ -132,7 +132,7 @@ class MainActivity : ComponentActivity() {
 						composable<Book> { backStackEntry ->
 							val resto: Resto = backStackEntry.toRoute()
 							val restaurant = restaurants.find { it.id == resto.uuid }
-							restaurant?.let { RestoBookScreen(restaurant) } ?: navController.navigate(Home)
+							restaurant?.let { RestoBookScreen(restaurant, onBack = { navController.popBackStack() } ) } ?: navController.navigate(Home)
 						}
 
 						composable<ReservationHistory> {
