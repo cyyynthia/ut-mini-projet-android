@@ -2,6 +2,10 @@ package m2sdl.lacuillere
 
 import android.Manifest
 import android.content.Intent
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -10,20 +14,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.absoluteOffset
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -46,30 +46,39 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import m2sdl.lacuillere.ui.components.BackButton
 import m2sdl.lacuillere.ui.components.CameraPreview
+import m2sdl.lacuillere.ui.components.DrawCanvas
+import m2sdl.lacuillere.ui.components.DrawingPropertiesMenu
 import m2sdl.lacuillere.ui.components.ShutterButton
 import m2sdl.lacuillere.ui.theme.LaCuillereTheme
 import m2sdl.lacuillere.viewmodel.CameraViewModel
+import m2sdl.lacuillere.viewmodel.CanvasViewModel
+import kotlin.math.sqrt
 
-class PhotoActivity : ComponentActivity() {
+class PhotoActivity : ComponentActivity(), SensorEventListener {
 	companion object {
 		init {
 			System.loadLibrary("NativeImageProcessor")
 		}
 	}
 
+	private lateinit var sensorManager: SensorManager
+	private var lightSensor: Sensor? = null
+
 	private val permissionGranted = mutableStateOf(false)
+	private var ambientLight = -1.0f
 
 	@OptIn(ExperimentalMaterial3Api::class)
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,16 +88,21 @@ class PhotoActivity : ComponentActivity() {
 		val insetsController = WindowInsetsControllerCompat(window, window.decorView)
 		insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
+		sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+		lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
+
 		setContent {
 			val density = LocalDensity.current
 			val permissionGranted by permissionGranted
 
 			val cameraViewModel: CameraViewModel by viewModels()
+			val canvasViewModel: CanvasViewModel by viewModels()
 			val activityTerminated by cameraViewModel.activityTerminated
 			val processing by cameraViewModel.processing
 			val image by cameraViewModel.image
 
 			var isApplyingFilters by remember { mutableStateOf(false) }
+			val ambientLight by rememberUpdatedState(ambientLight)
 
 			RequestCamera()
 
@@ -122,6 +136,7 @@ class PhotoActivity : ComponentActivity() {
 										onBack = {
 											isApplyingFilters = false
 											cameraViewModel.discardPicture()
+											canvasViewModel.clear()
 										}
 									)
 								},
@@ -141,12 +156,18 @@ class PhotoActivity : ComponentActivity() {
 									VerticalDivider(Modifier.padding(horizontal = 12.dp, vertical = 16.dp))
 									Button(
 										onClick = {
+											val filteredBitmap = cameraViewModel.imageWithFilter.value!!
+											val filteredImage = filteredBitmap.asImageBitmap()
+											val finalImage = canvasViewModel.draw(filteredImage)
+											val finalBitmap = finalImage.asAndroidBitmap()
+
 											val intent = Intent()
-											intent.putExtra(
-												"photo",
-												cameraViewModel.imageWithFilter.value?.asCompressedByteArray()
-											)
+											intent.putExtra("photo", finalBitmap.asCompressedByteArray())
 											setResult(RESULT_OK, intent)
+
+											image?.recycle()
+											filteredBitmap.recycle()
+											finalBitmap.recycle()
 											finish()
 										}
 									) {
@@ -158,50 +179,52 @@ class PhotoActivity : ComponentActivity() {
 					},
 					bottomBar = {
 						AnimatedVisibility(
-							visible = image != null && isApplyingFilters,
+							visible = image != null,
 							enter = slideInVertically { with(density) { 80.dp.roundToPx() } } + fadeIn(),
 							exit = slideOutVertically { with(density) { 80.dp.roundToPx() } } + fadeOut(),
 						) {
 							BottomAppBar {
-								LazyRow(
-									modifier = Modifier.padding(horizontal = 16.dp),
-									horizontalArrangement = Arrangement.spacedBy(8.dp)
-								) {
-									items(CameraViewModel.ImageFilter.entries) {
-										FilterChip(
-											label = { Text(it.filterName) },
-											selected = cameraViewModel.filter.value == it,
-											onClick = { cameraViewModel.filter.value = it },
-										)
+								if (isApplyingFilters) {
+									LazyRow(
+										modifier = Modifier.padding(horizontal = 16.dp),
+										horizontalArrangement = Arrangement.spacedBy(8.dp)
+									) {
+										items(CameraViewModel.ImageFilter.entries) {
+											val enabled = it.available?.invoke(cameraViewModel) != false
+											FilterChip(
+												label = { Text(it.filterName) },
+												enabled = enabled,
+												selected = cameraViewModel.filter.value == it,
+												onClick = {
+													if (!enabled) return@FilterChip toast("Ce filtre n'est pas disponible.")
+													cameraViewModel.filter.value = it
+												},
+											)
+										}
 									}
+								} else {
+									DrawingPropertiesMenu(
+										model = canvasViewModel,
+										modifier = Modifier
+											.padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
+											.fillMaxWidth()
+											.padding(4.dp),
+									)
 								}
 							}
 						}
 					}
-				) { innerPadding ->
-					val navbarPadding = WindowInsets.navigationBars.asPaddingValues()
-
-					val topPadding = innerPadding.calculateTopPadding()
-					val bottomPadding = // To make sure animation lands *just right*
-						(if (image != null) navbarPadding.calculateBottomPadding() else 0.dp) +
-							(if (isApplyingFilters) 80.dp else 0.dp)
-
-					val animateTop by animateDpAsState(topPadding)
-					val animateBottom by animateDpAsState(bottomPadding)
-
+				) {
 					if (permissionGranted) {
 						when (image) {
 							null -> CameraPreview(viewModel = cameraViewModel)
 							else -> Column(
-								Modifier
-									.padding(top = animateTop, bottom = animateBottom)
-									.fillMaxSize()
+								verticalArrangement = Arrangement.Center,
+								modifier = Modifier.fillMaxSize()
 							) {
-								Image(
-									cameraViewModel.imageWithFilter.value!!.asImageBitmap(),
-									modifier = Modifier.fillMaxSize(),
-									contentDescription = null,
-									contentScale = ContentScale.Fit,
+								DrawCanvas(
+									model = canvasViewModel,
+									bitmap = cameraViewModel.imageWithFilter.value!!.asImageBitmap(),
 								)
 							}
 						}
@@ -220,13 +243,40 @@ class PhotoActivity : ComponentActivity() {
 						}
 
 						if (image == null && !processing) {
-							ShutterButton(viewModel = cameraViewModel)
+							println(ambientLight)
+							ShutterButton(
+								viewModel = cameraViewModel,
+								ambientLight = ambientLight,
+							)
 						}
 					}
 				}
 			}
 		}
 	}
+
+	override fun onResume() {
+		super.onResume()
+		sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL)
+	}
+
+	override fun onPause() {
+		super.onPause()
+		sensorManager.unregisterListener(this)
+	}
+
+	override fun onSensorChanged(event: SensorEvent) {
+		when (event.sensor.type) {
+			Sensor.TYPE_LIGHT -> {
+				ambientLight = event.values[0]
+
+				// Imagine using `Log`, haha >:)
+				println("Light sensor $ambientLight")
+			}
+		}
+	}
+
+	override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) = Unit
 
 	@Composable
 	private fun RequestCamera() {

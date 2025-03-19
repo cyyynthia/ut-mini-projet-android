@@ -3,6 +3,8 @@ package m2sdl.lacuillere.viewmodel
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.media.MediaActionSound
+import android.media.MediaActionSound.SHUTTER_CLICK
 import android.util.Log
 import android.util.Size
 import androidx.camera.core.Camera
@@ -23,9 +25,15 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import com.zomato.photofilters.SampleFilters
 import com.zomato.photofilters.imageprocessors.Filter
+import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter
 import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubFilter
 import m2sdl.lacuillere.addListener
 import m2sdl.lacuillere.toast
+import java.lang.Math.pow
+import kotlin.math.absoluteValue
+import kotlin.math.exp
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class CameraViewModel : ViewModel() {
 	private val _activityTerminated = mutableStateOf(false)
@@ -39,28 +47,31 @@ class CameraViewModel : ViewModel() {
 	val processing: State<Boolean> = _processing
 	val image: State<Bitmap?> = _image
 
+	private var ambientLightAtCapture: Float = -1.0f
+
 	private var clone: Bitmap? = null
 	val imageWithFilter = derivedStateOf {
 		clone?.recycle()
 
 		val image = image.value ?: return@derivedStateOf null
-		val subfilter = filter.value.subfilter ?: return@derivedStateOf image
+		val subfilter = filter.value.builder?.invoke(this) ?: return@derivedStateOf image
 
 		clone = image.copy(image.config!!, true)
 		return@derivedStateOf subfilter.processFilter(clone)
 	}
 
 	private var camera: Camera? = null
-	private var cameraProvider: ProcessCameraProvider? = null
 
 	private val resSelector = ResolutionSelector.Builder()
 		.setResolutionStrategy(ResolutionStrategy(Size(1920, 1440), ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER))
 		.build()
 	private val imageCapture = ImageCapture.Builder()
 		.setResolutionSelector(resSelector)
+		.setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
 		.build()
 	private val cameraPreview = Preview.Builder()
 		.setResolutionSelector(resSelector)
+		.setPreviewStabilizationEnabled(true)
 		.build()
 		.apply { setSurfaceProvider { _surfaceRequest.value = it } }
 
@@ -72,9 +83,12 @@ class CameraViewModel : ViewModel() {
 
 			try {
 				cameraProvider.unbindAll()
-				this.camera =
-					cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, cameraPreview, imageCapture)
-				this.cameraProvider = cameraProvider
+				this.camera = cameraProvider.bindToLifecycle(
+					lifecycleOwner,
+					cameraSelector,
+					cameraPreview,
+					imageCapture,
+				)
 			} catch (ex: Exception) {
 				_activityTerminated.value = true
 				Log.e("LaCuillèrePhoto", "Use case binding failed", ex)
@@ -83,22 +97,24 @@ class CameraViewModel : ViewModel() {
 		}
 	}
 
-	fun takePicture(ctx: Context) {
-		val cameraProvider = this.cameraProvider ?: return
+	fun takePicture(ctx: Context, ambientLight: Float? = null) {
 		val camera = this.camera ?: return
 
-		cameraProvider.unbind(cameraPreview)
-
-		_processing.value = true
+		ambientLightAtCapture = ambientLight ?: -1.0f
 		imageCapture.takePicture(
 			ContextCompat.getMainExecutor(ctx),
 			object : ImageCapture.OnImageCapturedCallback() {
+				override fun onCaptureStarted() {
+					MediaActionSound().play(SHUTTER_CLICK)
+					_processing.value = true
+				}
+
 				override fun onCaptureSuccess(image: ImageProxy) {
 					_processing.value = false
 
+					val displayRotation = ContextCompat.getDisplayOrDefault(ctx).rotation * 90
 					val constantRotation = image.imageInfo.rotationDegrees - camera.cameraInfo.sensorRotationDegrees
-					val rotationDegrees =
-						camera.cameraInfo.sensorRotationDegrees - ContextCompat.getDisplayOrDefault(ctx).rotation * 90 + constantRotation
+					val rotationDegrees = camera.cameraInfo.sensorRotationDegrees - displayRotation + constantRotation
 
 					val matrix = Matrix()
 					matrix.postRotate(rotationDegrees.toFloat())
@@ -122,12 +138,45 @@ class CameraViewModel : ViewModel() {
 	fun discardPicture() {
 		_image.value = null
 		_surfaceRequest.value = null
+		filter.value = ImageFilter.None
 	}
 
-	enum class ImageFilter(val filterName: String, val subfilter: Filter?) {
-		None("Aucun", null),
-		BlackAndWhite("Noir et blanc", Filter().apply { addSubFilter(SaturationSubFilter(0f)) }),
-		Awestruck("Émerveillé", SampleFilters.getAweStruckVibeFilter()),
-		StarLit("Étoilé", SampleFilters.getStarLitFilter()),
+	enum class ImageFilter(
+		val filterName: String,
+		val available: (CameraViewModel.() -> Boolean)? = null,
+		val builder: (CameraViewModel.() -> Filter)? = null,
+	) {
+		None("Aucun"),
+		BlackAndWhite(
+			"Noir et blanc",
+			builder = { Filter().apply { addSubFilter(SaturationSubFilter(0f)) } },
+		),
+		Awestruck(
+			"Émerveillé",
+			builder = { SampleFilters.getAweStruckVibeFilter() },
+		),
+		StarLit(
+			"Étoilé",
+			builder = { SampleFilters.getStarLitFilter() },
+		),
+		DynamicBrighten(
+			"Luminescence dynamique",
+			available = { ambientLightAtCapture >= 0 },
+			builder = {
+				val brightness = transformAmbientLightToBrightness(ambientLightAtCapture).coerceIn(-1f, 1f)
+				Filter().apply { addSubFilter(BrightnessSubFilter((brightness * 100).toInt())) }
+			},
+		);
+
+		companion object {
+			private fun f(x: Float) = 1 - exp(-(x - 35).pow(2) / 200)
+			private fun g(x: Float) = x / 35 - 1
+			private fun h(x: Float) = h(x, g(x))
+			private fun h(x: Float, gx: Float) = -(gx / (1 + gx.absoluteValue)) * f(x) * 2
+			private fun i(x: Float) = i(x, h(x))
+			private fun i(x: Float, hx: Float) = hx / (1 + (sqrt(hx.absoluteValue - hx) / 2))
+
+			private fun transformAmbientLightToBrightness(light: Float) = i(light)
+		}
 	}
 }

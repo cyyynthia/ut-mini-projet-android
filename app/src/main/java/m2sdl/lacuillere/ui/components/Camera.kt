@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -62,8 +63,9 @@ fun CameraPreview(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ShutterButton(viewModel: CameraViewModel) {
+fun ShutterButton(viewModel: CameraViewModel, ambientLight: Float) {
 	val ctx = LocalContext.current
+	val ambientLight by rememberUpdatedState(ambientLight)
 
 	Column(
 		modifier = Modifier
@@ -81,7 +83,7 @@ fun ShutterButton(viewModel: CameraViewModel) {
 			elevation = ButtonDefaults.buttonElevation(2.dp),
 			colors = ButtonDefaults.buttonColors(containerColor = Color.White),
 			shape = RoundedCornerShape(48.dp),
-			onClick = { viewModel.takePicture(ctx) },
+			onClick = { viewModel.takePicture(ctx, ambientLight); println(ambientLight) },
 		) {}
 	}
 }
