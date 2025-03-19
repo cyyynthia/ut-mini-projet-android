@@ -9,7 +9,7 @@ data class Review(
 	override val id: UUID = UUID.randomUUID(),
 	val userId: UUID,
 	val restaurantId: UUID,
-	val note: Int,
+	val note: Float,
 	val text: String,
 	val photos: List<BitmapOrDrawableRef>,
 ) : Entity

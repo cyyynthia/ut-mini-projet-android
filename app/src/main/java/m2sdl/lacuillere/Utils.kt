@@ -5,8 +5,12 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.widget.Toast
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -45,4 +49,20 @@ fun Bitmap.asCompressedByteArray(): ByteArray {
 
 fun ByteArray.asBitmap(): Bitmap {
 	return BitmapFactory.decodeByteArray(this, 0, this.size)
+}
+
+// Thank you https://stackoverflow.com/a/77939629
+fun Modifier.hideKeyboardOnOutsideClick(): Modifier = composed {
+	val controller = LocalSoftwareKeyboardController.current
+	this then Modifier.noRippleClickable {
+		controller?.hide()
+	}
+}
+
+fun Modifier.noRippleClickable(onClick: () -> Unit): Modifier = composed {
+	this then Modifier.clickable(
+		indication = null,
+		interactionSource = remember { MutableInteractionSource() },
+		onClick = onClick
+	)
 }

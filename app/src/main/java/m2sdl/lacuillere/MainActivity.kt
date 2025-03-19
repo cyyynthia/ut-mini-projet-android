@@ -5,29 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -39,8 +20,10 @@ import m2sdl.lacuillere.ui.screens.ReservationHistory
 import m2sdl.lacuillere.ui.screens.ReservationHistoryScreen
 import m2sdl.lacuillere.ui.screens.Resto
 import m2sdl.lacuillere.ui.screens.RestoBookScreen
+import m2sdl.lacuillere.ui.screens.RestoReviewScreen
 import m2sdl.lacuillere.ui.screens.ReviewHistory
 import m2sdl.lacuillere.ui.screens.ReviewHistoryScreen
+import m2sdl.lacuillere.ui.screens.SubmitReview
 import m2sdl.lacuillere.ui.screens.home.HomeScreen
 import m2sdl.lacuillere.ui.screens.resto.RestoScreen
 import m2sdl.lacuillere.ui.theme.LaCuillereTheme
@@ -80,7 +63,9 @@ class MainActivity : ComponentActivity() {
 							restaurant?.let {
 								RestoScreen(
 									restaurant = it,
-									onNavigateToBook = { navController.navigate(Book(resto.uuid)) })
+									onNavigateToBook = { navController.navigate(Book(resto.uuid)) },
+									onNavigateToSubmitReview = { navController.navigate(SubmitReview(resto.uuid)) },
+								)
 							} ?: navController.navigate(Home)
 						}
 
@@ -90,6 +75,14 @@ class MainActivity : ComponentActivity() {
 							val book: Book = backStackEntry.toRoute()
 							val restaurant = RepositoryLocator.getRestaurantRepository().findById(book.uuid)
 							restaurant?.let { RestoBookScreen(restaurant, onBack = { navController.popBackStack() } ) } ?: navController.navigate(Home)
+						}
+
+						// I'd love to use a different animation for this route, but it's a pita to get right
+						// And I'm out of time :)
+						composable<SubmitReview> { backStackEntry ->
+							val review: SubmitReview = backStackEntry.toRoute()
+							val restaurant = RepositoryLocator.getRestaurantRepository().findById(review.uuid)
+							restaurant?.let { RestoReviewScreen(restaurant, onBack = { navController.popBackStack() } ) } ?: navController.navigate(Home)
 						}
 
 						composable<ReservationHistory> {

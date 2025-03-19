@@ -1,37 +1,35 @@
 package m2sdl.lacuillere.ui.screens.resto
 
-import android.graphics.Bitmap
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Reviews
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.core.os.BundleCompat
-import m2sdl.lacuillere.PhotoActivity
-import m2sdl.lacuillere.asBitmap
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import m2sdl.lacuillere.data.Restaurant
-import m2sdl.lacuillere.ui.composables.rememberActivityLauncherForResult
 
 @Composable
-fun ReviewsTab(restaurant: Restaurant) {
-	var photo by remember { mutableStateOf<Bitmap?>(null) }
+fun ReviewsTab(restaurant: Restaurant, onNavigateToSubmitReview: () -> Unit) {
+	Scaffold(
+		floatingActionButton = {
+			FloatingActionButton(onClick = onNavigateToSubmitReview) {
+				Icon(Icons.Filled.Reviews, null)
+			}
+		}
+	) {
+		Column(
+			modifier = Modifier
+				.padding(16.dp)
+				.verticalScroll(rememberScrollState())
+		) {
 
-	val photoActivityLauncher = rememberActivityLauncherForResult(PhotoActivity::class.java) {
-		photo = it?.extras?.let { BundleCompat.getParcelable(it, "photo", ByteArray::class.java) }?.asBitmap()
+		}
 	}
 
-	Column {
-		Button(onClick = photoActivityLauncher) {
-			Text("Photo")
-		}
-
-		if (photo != null) {
-			Image(photo!!.asImageBitmap(), contentDescription = null)
-		}
-	}
 }

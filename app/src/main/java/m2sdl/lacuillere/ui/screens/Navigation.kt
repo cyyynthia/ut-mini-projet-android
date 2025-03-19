@@ -21,6 +21,13 @@ data class Book(private val id: String) {
 }
 
 @Serializable
+data class SubmitReview(private val id: String) {
+	constructor(id: UUID) : this(id.toString())
+
+	val uuid: UUID by lazy { UUID.fromString(id) }
+}
+
+@Serializable
 object ReservationHistory
 
 @Serializable
