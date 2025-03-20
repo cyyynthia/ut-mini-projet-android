@@ -32,7 +32,8 @@ class MainActivity : ComponentActivity() {
 		super.onCreate(savedInstanceState)
 		enableEdgeToEdge()
 
-		RepositoryLocator.init(savedInstanceState)
+		// lmao
+		RepositoryLocator.init(this)
 
 		setContent {
 			val navController = rememberNavController()
@@ -96,8 +97,8 @@ class MainActivity : ComponentActivity() {
 		}
 	}
 
-	override fun onSaveInstanceState(outState: Bundle) {
-		RepositoryLocator.save(outState) // lmao²
-		super.onSaveInstanceState(outState)
+	override fun onDestroy() {
+		RepositoryLocator.save(this) // lmao²
+		super.onDestroy()
 	}
 }

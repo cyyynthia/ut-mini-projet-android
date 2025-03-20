@@ -19,6 +19,7 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import m2sdl.lacuillere.asBitmap
 import m2sdl.lacuillere.asCompressedByteArray
+import m2sdl.lacuillere.data.repository.RepositoryLocator
 import kotlin.ByteArray
 
 @Parcelize
@@ -67,20 +68,24 @@ class BitmapOrDrawableRef private constructor(
 	) {
 		val ctx = LocalContext.current
 		val bitmap by derivedStateOf {
-			val bitmap = toBitmap(ctx)
-			fitIn?.let {
-				with(Density(ctx)) {
-					bitmap.resizeToFitIn(
-						it.width.roundToPx(),
-						it.height.roundToPx(),
-					)
-				}
-			} ?: bitmap
+			try {
+				val bitmap = toBitmap(ctx)
+				fitIn?.let {
+					with(Density(ctx)) {
+						bitmap.resizeToFitIn(
+							it.width.roundToPx(),
+							it.height.roundToPx(),
+						)
+					}
+				} ?: bitmap
+			} catch (t: Throwable) {
+				// Likely fucked smth up in dev
+				// Kind of extreme solution but at that point...
+				RepositoryLocator.purge(ctx)
+				throw t
+			}
 		}
 
-		println(bitmap)
-		println(bitmap.width)
-		println(bitmap.height)
 		Image(
 			bitmap.asImageBitmap(),
 			contentDescription = contentDescription,
