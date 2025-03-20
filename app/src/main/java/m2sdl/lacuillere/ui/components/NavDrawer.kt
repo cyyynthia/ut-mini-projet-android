@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -38,7 +39,7 @@ fun NavDrawer(
 	content: @Composable () -> Unit,
 ) {
 	val ctx = LocalContext.current
-	val myself = RepositoryLocator.getUserRepository().findMyself()
+	val myself = remember { RepositoryLocator.getUserRepository().findMyself() }
 	val gesturesEnabled by derivedStateOf { state.isOpen }
 
 	ModalNavigationDrawer(

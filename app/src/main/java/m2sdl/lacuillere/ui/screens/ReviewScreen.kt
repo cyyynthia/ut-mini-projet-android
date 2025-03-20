@@ -50,6 +50,7 @@ import m2sdl.lacuillere.ui.components.BackButton
 import m2sdl.lacuillere.ui.components.LinearLoadingOverlay
 import m2sdl.lacuillere.ui.components.RestoCard
 import m2sdl.lacuillere.ui.composables.rememberActivityLauncherForResult
+import java.util.Date
 import kotlin.time.Duration.Companion.seconds
 
 private enum class ReviewScreenState {
@@ -88,6 +89,7 @@ fun RestoReviewScreen(restaurant: Restaurant, onBack: () -> Unit) {
 				Review(
 					userId = me.id,
 					restaurantId = restaurant.id,
+					date = Date(),
 					note = note,
 					text = comment,
 					photos = images.toHackyBitmapList(),

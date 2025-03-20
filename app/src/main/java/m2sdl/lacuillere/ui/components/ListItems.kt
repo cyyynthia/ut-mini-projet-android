@@ -20,6 +20,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,7 +36,9 @@ import m2sdl.lacuillere.data.repository.RepositoryLocator
 import m2sdl.lacuillere.ui.theme.DrawGreen
 import m2sdl.lacuillere.ui.theme.DrawRed
 import m2sdl.lacuillere.ui.theme.DrawYellow
+import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun ListItemDataRow(icon: ImageVector, data: String) {
@@ -51,7 +56,7 @@ fun ListItemDataRow(icon: ImageVector, data: String) {
 }
 
 @Composable
-fun StarRating(rating: Double, current: Int) {
+fun StarRatingIcon(rating: Double, current: Int) {
 	Icon(
 		when {
 			rating >= current + 1 -> Icons.Filled.Star
@@ -65,6 +70,50 @@ fun StarRating(rating: Double, current: Int) {
 }
 
 @Composable
+fun StarRating(rating: Double) {
+	Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.padding(bottom = 2.dp)) {
+		StarRatingIcon(rating, 0)
+		StarRatingIcon(rating, 1)
+		StarRatingIcon(rating, 2)
+		StarRatingIcon(rating, 3)
+		StarRatingIcon(rating, 4)
+	}
+}
+
+@Composable
+fun RestoProfilePicture(restaurant: Restaurant) {
+	Column(modifier = Modifier.padding(top = 4.dp)) {
+		restaurant.banner.HackyImage(
+			fitIn = DpSize(64.dp, 64.dp),
+			contentDescription = null,
+			modifier = Modifier
+				.size(64.dp, 64.dp)
+				.clip(RoundedCornerShape(8.dp))
+		)
+	}
+}
+
+@Composable
+fun ReviewBody(name: String, review: Review) {
+	Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+		Column {
+			Text(name, style = MaterialTheme.typography.titleLarge)
+
+			Row(
+				horizontalArrangement = Arrangement.spacedBy(8.dp),
+				verticalAlignment = Alignment.CenterVertically
+			) {
+				Text(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(review.date))
+				Text("•")
+				StarRating(review.note.toDouble())
+			}
+		}
+
+		Text(review.text)
+	}
+}
+
+@Composable
 fun RestoListItem(
 	restaurant: Restaurant,
 	onClick: () -> Unit,
@@ -72,10 +121,12 @@ fun RestoListItem(
 	modifier: Modifier = Modifier,
 ) {
 	val dtf = DateTimeFormatter.ofPattern("HH:mm")
-	val restaurantRating = RepositoryLocator.getReviewRepository()
-		.filterBy { it.restaurantId == restaurant.id }
-		.map { it.note }
-		.average()
+	val restaurantRating = remember {
+		RepositoryLocator.getReviewRepository()
+			.filterBy { it.restaurantId == restaurant.id }
+			.map { it.note }
+			.average()
+	}
 
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -83,15 +134,7 @@ fun RestoListItem(
 			.clickable { onClick() }
 			.padding(contentPadding)
 	) {
-		Column(modifier = Modifier.padding(top = 4.dp)) {
-			restaurant.banner.HackyImage(
-				fitIn = DpSize(64.dp, 64.dp),
-				contentDescription = null,
-				modifier = Modifier
-					.size(64.dp, 64.dp)
-					.clip(RoundedCornerShape(8.dp))
-			)
-		}
+		RestoProfilePicture(restaurant)
 
 		Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
 			Column {
@@ -122,14 +165,7 @@ fun RestoListItem(
 					}
 				}
 
-				Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.padding(bottom = 2.dp)) {
-					// TODO: fix?
-					StarRating(restaurantRating, 0)
-					StarRating(restaurantRating, 1)
-					StarRating(restaurantRating, 2)
-					StarRating(restaurantRating, 3)
-					StarRating(restaurantRating, 4)
-				}
+				StarRating(restaurantRating)
 			}
 
 			ListItemDataRow(Icons.Default.LocationOn, restaurant.addressShort)
@@ -139,14 +175,48 @@ fun RestoListItem(
 }
 
 @Composable
-fun ReviewListItem(review: Review) {
-	Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+fun ReviewListItem(review: Review, modifier: Modifier = Modifier) {
+	val user by derivedStateOf {
+		RepositoryLocator.getUserRepository().findById(review.userId)
+			?: throw RuntimeException("Bad record?!") // Should be properly handled, but meh.
+	}
 
+	Row(
+		horizontalArrangement = Arrangement.spacedBy(24.dp),
+		modifier = modifier
+	) {
+		Column(modifier = Modifier.padding(top = 4.dp)) {
+			user.avatar.HackyImage(
+				fitIn = DpSize(64.dp, 64.dp),
+				contentDescription = null,
+				modifier = Modifier
+					.size(64.dp, 64.dp)
+					.clip(RoundedCornerShape(32.dp))
+			)
+		}
+
+		ReviewBody(user.name, review)
 	}
 }
 
 @Composable
-fun ReservationListItem(reservation: Reservation) {
+fun ReviewListHistoryItem(review: Review, modifier: Modifier = Modifier) {
+	val restaurant by derivedStateOf {
+		RepositoryLocator.getRestaurantRepository().findById(review.restaurantId)
+			?: throw RuntimeException("Bad record?!") // Should be properly handled, but meh.
+	}
+
+	Row(
+		horizontalArrangement = Arrangement.spacedBy(24.dp),
+		modifier = modifier
+	) {
+		RestoProfilePicture(restaurant)
+		ReviewBody(restaurant.name, review)
+	}
+}
+
+@Composable
+fun ReservationListItem(reservation: Reservation, modifier: Modifier = Modifier) {
 	Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
 
 	}
