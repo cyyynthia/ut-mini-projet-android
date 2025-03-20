@@ -6,7 +6,6 @@ import android.graphics.Matrix
 import android.media.MediaActionSound
 import android.media.MediaActionSound.SHUTTER_CLICK
 import android.util.Log
-import android.util.Size
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -14,8 +13,6 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.core.SurfaceRequest
-import androidx.camera.core.resolutionselector.ResolutionSelector
-import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
@@ -64,15 +61,10 @@ class CameraViewModel : ViewModel() {
 
 	private var camera: Camera? = null
 
-	private val resSelector = ResolutionSelector.Builder()
-		.setResolutionStrategy(ResolutionStrategy(Size(1920, 1440), ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER))
-		.build()
 	private val imageCapture = ImageCapture.Builder()
-		.setResolutionSelector(resSelector)
 		.setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
 		.build()
 	private val cameraPreview = Preview.Builder()
-		.setResolutionSelector(resSelector)
 		.setPreviewStabilizationEnabled(true)
 		.build()
 		.apply { setSurfaceProvider { _surfaceRequest.value = it } }
