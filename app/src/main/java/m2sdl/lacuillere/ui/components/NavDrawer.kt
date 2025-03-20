@@ -27,7 +27,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import m2sdl.lacuillere.data.repository.RepositoryLocator
 import m2sdl.lacuillere.notImplementedToast
 
@@ -48,8 +47,7 @@ fun NavDrawer(
 		drawerContent = {
 			ModalDrawerSheet {
 				Spacer(Modifier.height(12.dp))
-				AsyncImage(
-					model = "https://pbs.twimg.com/media/FgagCUvWAAIhOgR.jpg",
+				myself.avatar.HackyImage(
 					contentDescription = null,
 					modifier = Modifier
 						.padding(horizontal = 16.dp, vertical = 8.dp)
