@@ -1,5 +1,7 @@
 package m2sdl.lacuillere.ui.components
 
+import android.icu.util.Calendar
+import android.icu.util.GregorianCalendar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -73,10 +75,7 @@ fun DatePickerModal(
 			}
 		}
 	) {
-		DatePicker(
-			title = { Text("Sélectionnez une date") },
-			state = datePickerState,
-		)
+		DatePicker(state = datePickerState)
 	}
 }
 
@@ -152,6 +151,7 @@ fun TimePickerModal(
 					TextButton(onClick = onDismiss) { Text("Annuler") }
 					TextButton(
 						onClick = {
+							onDismiss()
 							onDateSelected(
 								setHoursAndMinutesToMillis(
 									selectedDate,
@@ -260,6 +260,14 @@ fun convertMillisToHour(millis: Long): String {
 }
 
 fun convertMillisToHoursAndMinutes(millis: Long): Pair<Int, Int> {
+	val cal = GregorianCalendar.getInstance()
+	cal.timeInMillis = millis
+
+	return Pair(
+		cal.get(Calendar.HOUR_OF_DAY),
+		cal.get(Calendar.MINUTE),
+	)
+
 	// https://gist.github.com/timvisee/fcda9bbdff88d45cc9061606b4b923ca
 	// After a thorough evaluation of the situation (2.1s of thinking), I decided that I don't care.
 	val millisInDay = 60e3 * 60 * 24
@@ -273,12 +281,11 @@ fun convertMillisToHoursAndMinutes(millis: Long): Pair<Int, Int> {
 }
 
 fun setHoursAndMinutesToMillis(millis: Long, hours: Int, minutes: Int): Long {
-	// https://gist.github.com/timvisee/fcda9bbdff88d45cc9061606b4b923ca
-	// After a thorough evaluation of the situation (1.6s of thinking), I decided that I don't care.
-	val millisInDay = 60e3 * 60 * 24
-	val millisInHour = 60e3 * 60
-	val millisInMinute = 60e3
+	val cal = GregorianCalendar.getInstance()
+	cal.timeInMillis = millis
 
-	val date = floor(millis / millisInDay).toLong()
-	return ((date * millisInDay) + (hours * millisInHour) + (minutes * millisInMinute)).toLong()
+	cal.set(Calendar.HOUR_OF_DAY, hours)
+	cal.set(Calendar.MINUTE, minutes)
+
+	return cal.timeInMillis
 }

@@ -175,13 +175,13 @@ fun PropertiesMenuDialog(
 					verticalAlignment = Alignment.CenterVertically,
 					horizontalArrangement = Arrangement.SpaceBetween
 				) {
-					ColorButton(pathOption, Color.Black) { onPathOptionsChange(it); onDismiss() }
-					ColorButton(pathOption, DrawRed) { onPathOptionsChange(it); onDismiss() }
-					ColorButton(pathOption, DrawYellow) { onPathOptionsChange(it); onDismiss() }
-					ColorButton(pathOption, DrawGreen) { onPathOptionsChange(it); onDismiss() }
-					ColorButton(pathOption, DrawBlue) { onPathOptionsChange(it); onDismiss() }
-					ColorButton(pathOption, DrawMagenta) { onPathOptionsChange(it); onDismiss() }
-					ColorButton(pathOption, Color.White) { onPathOptionsChange(it); onDismiss() }
+					ColorButton(pathOption, Color.Black, onPathOptionsChange)
+					ColorButton(pathOption, DrawRed, onPathOptionsChange)
+					ColorButton(pathOption, DrawYellow, onPathOptionsChange)
+					ColorButton(pathOption, DrawGreen, onPathOptionsChange)
+					ColorButton(pathOption, DrawBlue, onPathOptionsChange)
+					ColorButton(pathOption, DrawMagenta, onPathOptionsChange)
+					ColorButton(pathOption, Color.White, onPathOptionsChange)
 				}
 			}
 

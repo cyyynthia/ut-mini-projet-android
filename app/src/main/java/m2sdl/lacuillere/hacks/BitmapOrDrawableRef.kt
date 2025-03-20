@@ -6,16 +6,27 @@ import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.DpSize
 import androidx.core.graphics.drawable.toBitmap
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
+import m2sdl.lacuillere.asBitmap
+import m2sdl.lacuillere.asCompressedByteArray
+import kotlin.ByteArray
 
 @Parcelize
-class BitmapOrDrawableRef private constructor(private val bitmap: Bitmap?, private val drawable: Int?) : Parcelable {
+class BitmapOrDrawableRef private constructor(
+	@IgnoredOnParcel
+	private var bitmap: Bitmap? = null,
+	private val drawable: Int? = null,
+) : Parcelable {
 	companion object {
 		fun Bitmap.toHackyBitmap(): BitmapOrDrawableRef {
 			return BitmapOrDrawableRef(this)
@@ -28,6 +39,11 @@ class BitmapOrDrawableRef private constructor(private val bitmap: Bitmap?, priva
 
 	constructor(bitmap: Bitmap) : this(bitmap, null)
 	constructor(@DrawableRes drawable: Int) : this(null, drawable)
+
+	@Suppress("unused")
+	private var compressedBitmap: ByteArray?
+		get() = bitmap?.asCompressedByteArray()
+		set(value) { bitmap = value?.asBitmap() }
 
 	@IgnoredOnParcel
 	private lateinit var cachedBitmap: Bitmap
@@ -45,17 +61,53 @@ class BitmapOrDrawableRef private constructor(private val bitmap: Bitmap?, priva
 	@Composable
 	fun HackyImage(
 		contentDescription: String?,
+		fitIn: DpSize? = null,
 		modifier: Modifier = Modifier,
 		contentScale: ContentScale = ContentScale.Crop,
 	) {
 		val ctx = LocalContext.current
-		val bitmap = toBitmap(ctx)
+		val bitmap by derivedStateOf {
+			val bitmap = toBitmap(ctx)
+			fitIn?.let {
+				with(Density(ctx)) {
+					bitmap.resizeToFitIn(
+						it.width.roundToPx(),
+						it.height.roundToPx(),
+					)
+				}
+			} ?: bitmap
+		}
 
+		println(bitmap)
+		println(bitmap.width)
+		println(bitmap.height)
 		Image(
 			bitmap.asImageBitmap(),
 			contentDescription = contentDescription,
 			modifier = modifier,
 			contentScale = contentScale,
+		)
+	}
+
+	private fun Bitmap.resizeToFitIn(targetWidth: Int, targetHeight: Int): Bitmap {
+		if (width > height) {
+			if (height < targetHeight) return this
+			val targetWidth = (width * targetHeight / height)
+			return Bitmap.createScaledBitmap(
+				this,
+				targetWidth,
+				targetHeight,
+				true
+			)
+		}
+
+		if (width < targetWidth) return this
+		val targetHeight = (height * targetWidth / width)
+		return Bitmap.createScaledBitmap(
+			this,
+			targetWidth,
+			targetHeight,
+			true
 		)
 	}
 }

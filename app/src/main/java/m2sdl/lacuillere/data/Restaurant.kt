@@ -22,18 +22,31 @@ data class Restaurant(
 ) : Entity {
 	fun isCurrentlyOpen(): Boolean {
 		val lt = LocalTime.now()
-		return openingHours.any { it.first >= lt && it.second <= lt }
+		return openingHours.any {
+			if (it.first > it.second) {
+				// Transition over midnight. Think the other way around; check we're NOT inside the first--end range
+				!(it.first >= lt && it.second <= lt)
+			} else {
+				it.first >= lt && it.second <= lt
+			}
+		}
 	}
 
 	fun nextOpeningHours(): LocalTime {
+		// Deals with transitions over midnight. KISS
+		if (openingHours.size == 1) return openingHours[0].first
+
 		val lt = LocalTime.now()
-		return openingHours.firstOrNull { lt < it.first }?.first
+		return openingHours.firstOrNull { it.first < lt }?.first
 			?: openingHours.first().first
 	}
 
 	fun nextClosingHours(): LocalTime {
+		// Deals with transitions over midnight. KISS
+		if (openingHours.size == 1) return openingHours[0].second
+
 		val lt = LocalTime.now()
-		return openingHours.firstOrNull { lt >= it.first }?.first
+		return openingHours.firstOrNull { it.first >=  lt }?.second
 			?: openingHours.first().second // This would definitely be a suspicious case... cba to deal with it properly.
 	}
 }

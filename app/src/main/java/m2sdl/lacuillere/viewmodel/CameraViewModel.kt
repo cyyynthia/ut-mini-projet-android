@@ -29,9 +29,9 @@ import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter
 import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubFilter
 import m2sdl.lacuillere.addListener
 import m2sdl.lacuillere.toast
-import java.lang.Math.pow
 import kotlin.math.absoluteValue
 import kotlin.math.exp
+import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -111,15 +111,23 @@ class CameraViewModel : ViewModel() {
 
 				override fun onCaptureSuccess(image: ImageProxy) {
 					_processing.value = false
+					val captured = image.toBitmap()
 
 					val displayRotation = ContextCompat.getDisplayOrDefault(ctx).rotation * 90
 					val constantRotation = image.imageInfo.rotationDegrees - camera.cameraInfo.sensorRotationDegrees
 					val rotationDegrees = camera.cameraInfo.sensorRotationDegrees - displayRotation + constantRotation
 
+					val maxHeight = 1920
+					val maxWidth = 1440
+					val scale = min(
+						(maxHeight.toFloat() / captured.getWidth()).toDouble(),
+						(maxWidth.toFloat() / captured.getHeight()).toDouble()
+					)
+
 					val matrix = Matrix()
 					matrix.postRotate(rotationDegrees.toFloat())
+					matrix.postScale(scale.toFloat(), scale.toFloat())
 
-					val captured = image.toBitmap()
 					val bitmap: Bitmap = Bitmap.createBitmap(captured, 0, 0, image.width, image.height, matrix, true)
 					captured.recycle()
 
@@ -173,10 +181,10 @@ class CameraViewModel : ViewModel() {
 			private fun g(x: Float) = x / 35 - 1
 			private fun h(x: Float) = h(x, g(x))
 			private fun h(x: Float, gx: Float) = -(gx / (1 + gx.absoluteValue)) * f(x) * 2
-			private fun i(x: Float) = i(x, h(x))
-			private fun i(x: Float, hx: Float) = hx / (1 + (sqrt(hx.absoluteValue - hx) / 2))
+			private fun i(x: Float) = x / (1 + (sqrt(x.absoluteValue - x) / 2))
+			private fun j(x: Float) = i(h(x))
 
-			private fun transformAmbientLightToBrightness(light: Float) = i(light)
+			private fun transformAmbientLightToBrightness(light: Float) = j(light)
 		}
 	}
 }

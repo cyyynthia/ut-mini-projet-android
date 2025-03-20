@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import m2sdl.lacuillere.data.Reservation
 import m2sdl.lacuillere.data.Restaurant
@@ -84,6 +85,7 @@ fun RestoListItem(
 	) {
 		Column(modifier = Modifier.padding(top = 4.dp)) {
 			restaurant.banner.HackyImage(
+				fitIn = DpSize(64.dp, 64.dp),
 				contentDescription = null,
 				modifier = Modifier
 					.size(64.dp, 64.dp)

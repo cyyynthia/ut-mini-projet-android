@@ -25,6 +25,7 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -57,44 +58,46 @@ fun HomeScreen(
 	var isViewingList by rememberSaveable { mutableStateOf(false) }
 	val density = LocalDensity.current
 
-	NavDrawer(
-		state = drawerState,
-		onNavigateReservationHistory = onNavigateReservationHistory,
-		onNavigateReviewHistory = onNavigateReviewHistory,
-	) {
-		Box(modifier = Modifier.fillMaxSize()) {
-			// Ugly shenanigans to deal with navigation controller pitfalls & GoogleMap composable!
-			// To avoid re-rendering the map when switching back and forth, the map is always rendered.
-			// When viewing the lists view, the map is simply hidden behind the list view.
-			// See also: https://stackoverflow.com/a/73808783
+	Scaffold {
+		NavDrawer(
+			state = drawerState,
+			onNavigateReservationHistory = onNavigateReservationHistory,
+			onNavigateReviewHistory = onNavigateReviewHistory,
+		) {
+			Box(modifier = Modifier.fillMaxSize()) {
+				// Ugly shenanigans to deal with navigation controller pitfalls & GoogleMap composable!
+				// To avoid re-rendering the map when switching back and forth, the map is always rendered.
+				// When viewing the lists view, the map is simply hidden behind the list view.
+				// See also: https://stackoverflow.com/a/73808783
 
-			HomeMapScreen(
-				isDrawerOrListOpen = drawerState.isOpen || isViewingList,
-				model = model,
-				restaurants = restaurants,
-				onNavigateToRestaurant = onNavigateToRestaurant,
-				onMapUnavailable = { isViewingList = true }
-			)
+				HomeMapScreen(
+					isDrawerOrListOpen = drawerState.isOpen || isViewingList,
+					model = model,
+					restaurants = restaurants,
+					onNavigateToRestaurant = onNavigateToRestaurant,
+					onMapUnavailable = { isViewingList = true }
+				)
 
-			AnimatedVisibility(
-				visible = isViewingList,
-				enter = slideInVertically { with(density) { 40.dp.roundToPx() } } + fadeIn(),
-				exit = slideOutVertically { with(density) { 40.dp.roundToPx() } } + fadeOut(),
-			) {
-				HomeListScreen(restaurants, onNavigateToRestaurant)
-			}
+				AnimatedVisibility(
+					visible = isViewingList,
+					enter = slideInVertically { with(density) { 40.dp.roundToPx() } } + fadeIn(),
+					exit = slideOutVertically { with(density) { 40.dp.roundToPx() } } + fadeOut(),
+				) {
+					HomeListScreen(restaurants, onNavigateToRestaurant)
+				}
 
-			SearchBar(
-				onOpenNav = {
-					scope.launch {
-						drawerState.apply {
-							if (isClosed) open() else close()
+				SearchBar(
+					onOpenNav = {
+						scope.launch {
+							drawerState.apply {
+								if (isClosed) open() else close()
+							}
 						}
 					}
-				}
-			)
+				)
 
-			HomeScreenNav(isViewingList, onChange = { isViewingList = it })
+				HomeScreenNav(isViewingList, onChange = { isViewingList = it })
+			}
 		}
 	}
 }
@@ -110,6 +113,7 @@ fun HomeScreenNav(isViewingList: Boolean, onChange: (Boolean) -> Unit) {
 	) {
 		Surface(
 			shape = RoundedCornerShape(22.dp),
+			tonalElevation = 4.dp,
 			shadowElevation = 8.dp,
 			modifier = Modifier
 				.width(160.dp)

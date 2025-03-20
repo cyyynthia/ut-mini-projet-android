@@ -105,9 +105,9 @@ fun RestoBookScreen(restaurant: Restaurant, onBack: () -> Unit) {
 			modifier = Modifier
 				.fillMaxSize()
 				.padding(innerPadding)
-				.padding(16.dp)
 				.verticalScroll(rememberScrollState())
-				.hideKeyboardOnOutsideClick(),
+				.hideKeyboardOnOutsideClick()
+				.padding(horizontal = 16.dp, vertical = 8.dp),
 			verticalArrangement = Arrangement.spacedBy(16.dp)
 		) {
 			RestoCard(restaurant)

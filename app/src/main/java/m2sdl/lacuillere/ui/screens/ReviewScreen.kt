@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,7 +34,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.core.os.BundleCompat
 import kotlinx.coroutines.delay
@@ -64,7 +62,6 @@ private enum class ReviewScreenState {
 @Composable
 fun RestoReviewScreen(restaurant: Restaurant, onBack: () -> Unit) {
 	val ctx = LocalContext.current
-	val keyboardController = LocalSoftwareKeyboardController.current
 
 	val scope = rememberCoroutineScope()
 	var state by rememberSaveable { mutableStateOf(ReviewScreenState.Filling) }
@@ -117,9 +114,9 @@ fun RestoReviewScreen(restaurant: Restaurant, onBack: () -> Unit) {
 			modifier = Modifier
 				.fillMaxSize()
 				.padding(innerPadding)
-				.padding(16.dp)
 				.verticalScroll(rememberScrollState())
-				.hideKeyboardOnOutsideClick(),
+				.hideKeyboardOnOutsideClick()
+				.padding(horizontal = 16.dp, vertical = 8.dp),
 			verticalArrangement = Arrangement.spacedBy(16.dp)
 		) {
 			RestoCard(restaurant)
@@ -145,8 +142,8 @@ fun RestoReviewScreen(restaurant: Restaurant, onBack: () -> Unit) {
 				onValueChange = { comment = it },
 				label = { Text("Commentaire") },
 				modifier = Modifier.fillMaxWidth(),
-				keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
 				minLines = 4,
+				maxLines = 4,
 			)
 
 			Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
