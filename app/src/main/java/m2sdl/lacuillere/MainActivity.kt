@@ -98,6 +98,7 @@ class MainActivity : ComponentActivity() {
 	}
 
 	override fun onDestroy() {
+		println("Saving repo")
 		RepositoryLocator.save(this) // lmao²
 		super.onDestroy()
 	}

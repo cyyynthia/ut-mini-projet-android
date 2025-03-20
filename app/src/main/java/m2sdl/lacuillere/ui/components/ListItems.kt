@@ -7,8 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.StarHalf
@@ -22,7 +26,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +39,7 @@ import m2sdl.lacuillere.data.Reservation
 import m2sdl.lacuillere.data.Restaurant
 import m2sdl.lacuillere.data.Review
 import m2sdl.lacuillere.data.repository.RepositoryLocator
+import m2sdl.lacuillere.hacks.BitmapOrDrawableRef
 import m2sdl.lacuillere.ui.theme.DrawGreen
 import m2sdl.lacuillere.ui.theme.DrawRed
 import m2sdl.lacuillere.ui.theme.DrawYellow
@@ -114,6 +121,30 @@ fun ReviewBody(name: String, review: Review) {
 }
 
 @Composable
+fun ReviewImages(review: Review) {
+	var bigImage by remember { mutableStateOf<BitmapOrDrawableRef?>(null) }
+
+	LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+		items(review.photos) {
+			val bitmap = it.rememberBitmap()
+
+			it.HackyImage(
+				contentDescription = null,
+				modifier = Modifier
+					.width(80.dp)
+					.aspectRatio(bitmap.width.toFloat() / bitmap.height.toFloat())
+					.clip(RoundedCornerShape(8.dp))
+					.clickable { bigImage = it }
+			)
+		}
+	}
+
+	bigImage?.let {
+		BigImageDialog(it) { bigImage = null }
+	}
+}
+
+@Composable
 fun RestoListItem(
 	restaurant: Restaurant,
 	onClick: () -> Unit,
@@ -181,21 +212,26 @@ fun ReviewListItem(review: Review, modifier: Modifier = Modifier) {
 			?: throw RuntimeException("Bad record?!") // Should be properly handled, but meh.
 	}
 
-	Row(
-		horizontalArrangement = Arrangement.spacedBy(24.dp),
-		modifier = modifier
-	) {
-		Column(modifier = Modifier.padding(top = 4.dp)) {
-			user.avatar.HackyImage(
-				fitIn = DpSize(64.dp, 64.dp),
-				contentDescription = null,
-				modifier = Modifier
-					.size(64.dp, 64.dp)
-					.clip(RoundedCornerShape(32.dp))
-			)
-		}
+	Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+		Row(
+			horizontalArrangement = Arrangement.spacedBy(24.dp),
+			modifier = modifier
+		) {
+			Column(modifier = Modifier.padding(top = 4.dp)) {
+				user.avatar.HackyImage(
+					fitIn = DpSize(64.dp, 64.dp),
+					contentDescription = null,
+					modifier = Modifier
+						.size(64.dp, 64.dp)
+						.clip(RoundedCornerShape(32.dp))
+				)
+			}
 
-		ReviewBody(user.name, review)
+			ReviewBody(user.name, review)
+		}
+		if (review.photos.isNotEmpty()) {
+			ReviewImages(review)
+		}
 	}
 }
 
@@ -206,12 +242,17 @@ fun ReviewListHistoryItem(review: Review, modifier: Modifier = Modifier) {
 			?: throw RuntimeException("Bad record?!") // Should be properly handled, but meh.
 	}
 
-	Row(
-		horizontalArrangement = Arrangement.spacedBy(24.dp),
-		modifier = modifier
-	) {
-		RestoProfilePicture(restaurant)
-		ReviewBody(restaurant.name, review)
+	Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+		Row(
+			horizontalArrangement = Arrangement.spacedBy(24.dp),
+			modifier = modifier
+		) {
+			RestoProfilePicture(restaurant)
+			ReviewBody(restaurant.name, review)
+		}
+		if (review.photos.isNotEmpty()) {
+			ReviewImages(review)
+		}
 	}
 }
 

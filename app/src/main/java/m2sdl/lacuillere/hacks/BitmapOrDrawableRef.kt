@@ -6,8 +6,7 @@ import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -20,7 +19,6 @@ import kotlinx.parcelize.Parcelize
 import m2sdl.lacuillere.asBitmap
 import m2sdl.lacuillere.asCompressedByteArray
 import m2sdl.lacuillere.data.repository.RepositoryLocator
-import kotlin.ByteArray
 
 @Parcelize
 class BitmapOrDrawableRef private constructor(
@@ -60,24 +58,11 @@ class BitmapOrDrawableRef private constructor(
 	}
 
 	@Composable
-	fun HackyImage(
-		contentDescription: String?,
-		fitIn: DpSize? = null,
-		modifier: Modifier = Modifier,
-		contentScale: ContentScale = ContentScale.Crop,
-	) {
+	fun rememberBitmap(): Bitmap {
 		val ctx = LocalContext.current
-		val bitmap by derivedStateOf {
+		return remember(this, ctx) {
 			try {
-				val bitmap = toBitmap(ctx)
-				fitIn?.let {
-					with(Density(ctx)) {
-						bitmap.resizeToFitIn(
-							it.width.roundToPx(),
-							it.height.roundToPx(),
-						)
-					}
-				} ?: bitmap
+				toBitmap(ctx)
 			} catch (t: Throwable) {
 				// Likely fucked smth up in dev
 				// Kind of extreme solution but at that point...
@@ -85,9 +70,29 @@ class BitmapOrDrawableRef private constructor(
 				throw t
 			}
 		}
+	}
+
+	@Composable
+	fun HackyImage(
+		contentDescription: String?,
+		fitIn: DpSize? = null,
+		modifier: Modifier = Modifier,
+		contentScale: ContentScale = ContentScale.Crop,
+	) {
+		val ctx = LocalContext.current
+		val bitmap = rememberBitmap()
+
+		val scaledBitmap = fitIn?.let {
+			with(Density(ctx)) {
+				bitmap.resizeToFitIn(
+					it.width.roundToPx(),
+					it.height.roundToPx(),
+				)
+			}
+		} ?: bitmap
 
 		Image(
-			bitmap.asImageBitmap(),
+			scaledBitmap.asImageBitmap(),
 			contentDescription = contentDescription,
 			modifier = modifier,
 			contentScale = contentScale,
