@@ -18,11 +18,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import coil3.compose.AsyncImage
 import m2sdl.lacuillere.data.Restaurant
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,18 +32,15 @@ fun RestoScreen(
 	var selectedTabIndex by remember { mutableStateOf(0) }
 	var showDialog by remember { mutableStateOf(false) }
 	val tabs = listOf("À propos", "Avis")
-	val ctx = LocalContext.current
 
 	Column(modifier = Modifier.fillMaxSize()) {
 		Box {
-			AsyncImage(
-				model = restaurant.photos[0].toBitmap(ctx), //Change for show list of photos
-				contentDescription = "Image du restaurant",
+			restaurant.banner.HackyImage(
+				contentDescription = null,
 				modifier = Modifier
 					.fillMaxWidth()
 					.height(200.dp)
-					.clickable { showDialog = true },
-				contentScale = ContentScale.Crop
+					.clickable { showDialog = true }
 			)
 		}
 		Text(
@@ -74,8 +68,8 @@ fun RestoScreen(
 	if (showDialog) {
 		Dialog(onDismissRequest = { showDialog = false }) {
 			Box(modifier = Modifier.fillMaxSize()) {
-				AsyncImage(
-					model = restaurant.photos[0].toBitmap(ctx), //Change for show list of photos
+				// Change for show list of photos
+				restaurant.banner.HackyImage(
 					contentDescription = "Image du restaurant",
 					modifier = Modifier
 						.fillMaxSize()

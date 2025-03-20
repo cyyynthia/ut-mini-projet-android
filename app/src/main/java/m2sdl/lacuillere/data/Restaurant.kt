@@ -19,4 +19,21 @@ data class Restaurant(
 	val banner: BitmapOrDrawableRef,
 	val photos: List<BitmapOrDrawableRef>,
 	val position: LatLng,
-) : Entity
+) : Entity {
+	fun isCurrentlyOpen(): Boolean {
+		val lt = LocalTime.now()
+		return openingHours.any { it.first >= lt && it.second <= lt }
+	}
+
+	fun nextOpeningHours(): LocalTime {
+		val lt = LocalTime.now()
+		return openingHours.firstOrNull { lt < it.first }?.first
+			?: openingHours.first().first
+	}
+
+	fun nextClosingHours(): LocalTime {
+		val lt = LocalTime.now()
+		return openingHours.firstOrNull { lt >= it.first }?.first
+			?: openingHours.first().second // This would definitely be a suspicious case... cba to deal with it properly.
+	}
+}

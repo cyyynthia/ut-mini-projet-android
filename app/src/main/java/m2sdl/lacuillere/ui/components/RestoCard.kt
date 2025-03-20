@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -18,9 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import m2sdl.lacuillere.data.Restaurant
 
 @Composable
@@ -32,13 +29,11 @@ fun RestoCard(restaurant: Restaurant, modifier: Modifier = Modifier) {
 			verticalAlignment = Alignment.Top
 		) {
 			Column(modifier = Modifier.padding(top = 4.dp)) {
-				AsyncImage(
-					model = "https://pbs.twimg.com/media/FgagCUvWAAIhOgR.jpg",
+				restaurant.banner.HackyImage(
 					contentDescription = null,
 					modifier = Modifier
 						.size(64.dp, 64.dp)
-						.clip(RoundedCornerShape(8.dp)),
-					contentScale = ContentScale.Crop
+						.clip(RoundedCornerShape(8.dp))
 				)
 			}
 
@@ -46,28 +41,9 @@ fun RestoCard(restaurant: Restaurant, modifier: Modifier = Modifier) {
 				Row {
 					Text(restaurant.name, style = MaterialTheme.typography.titleLarge)
 				}
-				Row(
-					horizontalArrangement = Arrangement.spacedBy(8.dp),
-					verticalAlignment = Alignment.CenterVertically
-				) {
-					Icon(
-						Icons.Default.LocationOn,
-						contentDescription = null,
-						modifier = Modifier.size(MaterialTheme.typography.bodyMedium.fontSize.value.dp)
-					)
-					Text(restaurant.address, style = MaterialTheme.typography.bodyMedium)
-				}
-				Row(
-					horizontalArrangement = Arrangement.spacedBy(8.dp),
-					verticalAlignment = Alignment.CenterVertically
-				) {
-					Icon(
-						Icons.Default.Phone,
-						contentDescription = null,
-						modifier = Modifier.size(MaterialTheme.typography.bodyMedium.fontSize.value.dp)
-					)
-					Text(restaurant.telephone, style = MaterialTheme.typography.bodyMedium)
-				}
+
+				ListItemDataRow(Icons.Default.LocationOn, restaurant.address)
+				ListItemDataRow(Icons.Default.Phone, restaurant.telephone)
 			}
 		}
 	}

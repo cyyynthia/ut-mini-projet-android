@@ -255,7 +255,7 @@ fun convertMillisToDate(millis: Long): String {
 
 
 fun convertMillisToHour(millis: Long): String {
-	val formatter = SimpleDateFormat("HH:MM", Locale.getDefault())
+	val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
 	return formatter.format(Date(millis))
 }
 
