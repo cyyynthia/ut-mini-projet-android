@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,6 +31,7 @@ import m2sdl.lacuillere.data.Review
 import m2sdl.lacuillere.data.repository.RepositoryLocator
 import m2sdl.lacuillere.ui.theme.DrawGreen
 import m2sdl.lacuillere.ui.theme.DrawRed
+import m2sdl.lacuillere.ui.theme.DrawYellow
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -41,7 +43,7 @@ fun ListItemDataRow(icon: ImageVector, data: String) {
 		Icon(
 			icon,
 			contentDescription = null,
-			modifier = Modifier.size(MaterialTheme.typography.bodyMedium.fontSize.value.dp)
+			modifier = Modifier.size(MaterialTheme.typography.bodyMedium.fontSize.value.dp),
 		)
 		Text(data, style = MaterialTheme.typography.bodyMedium)
 	}
@@ -56,21 +58,30 @@ fun StarRating(rating: Double, current: Int) {
 			else -> Icons.Filled.StarBorder
 		},
 		contentDescription = null,
-		modifier = Modifier.size(12.dp)
+		modifier = Modifier.size(MaterialTheme.typography.bodyMedium.fontSize.value.dp),
+		tint = DrawYellow,
 	)
 }
 
 @Composable
-fun RestoListItem(restaurant: Restaurant, onClick: () -> Unit) {
+fun RestoListItem(
+	restaurant: Restaurant,
+	onClick: () -> Unit,
+	contentPadding: PaddingValues = PaddingValues(),
+	modifier: Modifier = Modifier,
+) {
 	val dtf = DateTimeFormatter.ofPattern("HH:mm")
-	val _restaurantRating = RepositoryLocator.getReviewRepository()
+	val restaurantRating = RepositoryLocator.getReviewRepository()
 		.filterBy { it.restaurantId == restaurant.id }
 		.map { it.note }
 		.average()
 
-	val restaurantRating = 3.4
-
-	Row(horizontalArrangement = Arrangement.spacedBy(24.dp), modifier = Modifier.clickable { onClick() }) {
+	Row(
+		horizontalArrangement = Arrangement.spacedBy(24.dp),
+		modifier = modifier
+			.clickable { onClick() }
+			.padding(contentPadding)
+	) {
 		Column(modifier = Modifier.padding(top = 4.dp)) {
 			restaurant.banner.HackyImage(
 				contentDescription = null,
@@ -80,7 +91,7 @@ fun RestoListItem(restaurant: Restaurant, onClick: () -> Unit) {
 			)
 		}
 
-		Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+		Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
 			Column {
 				Text(restaurant.name, style = MaterialTheme.typography.titleLarge)
 
@@ -109,7 +120,7 @@ fun RestoListItem(restaurant: Restaurant, onClick: () -> Unit) {
 					}
 				}
 
-				Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+				Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.padding(bottom = 2.dp)) {
 					// TODO: fix?
 					StarRating(restaurantRating, 0)
 					StarRating(restaurantRating, 1)

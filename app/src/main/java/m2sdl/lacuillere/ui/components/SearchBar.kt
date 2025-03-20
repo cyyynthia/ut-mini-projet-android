@@ -1,9 +1,6 @@
 package m2sdl.lacuillere.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.absoluteOffset
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -22,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -42,50 +38,40 @@ fun SearchBar(onOpenNav: () -> Unit) {
 		expanded = false
 	}
 
-	Box(
-		modifier = Modifier
-			.fillMaxSize()
-			.absoluteOffset(0.dp, 0.dp)
-			.pointerInteropFilter {
-				expanded = false
-				false
-			},
-	) {
-		MaterialSearchBar(
-			inputField = {
-				InputField(
-					query = "",
-					onQueryChange = {},
-					onSearch = {},
+	MaterialSearchBar(
+		inputField = {
+			InputField(
+				query = "",
+				onQueryChange = {},
+				onSearch = {},
 
-					expanded = expanded,
-					onExpandedChange = { expanded = it },
-					placeholder = {
-						Text("Rechercher un restaurant...")
-					},
-					leadingIcon = {
-						IconButton(onClick = onOpenNav) {
-							Icon(
-								imageVector = Icons.Default.Menu,
-								contentDescription = null,
-							)
-						}
-					},
-					trailingIcon = {
+				expanded = expanded,
+				onExpandedChange = { expanded = it },
+				placeholder = {
+					Text("Rechercher un restaurant...")
+				},
+				leadingIcon = {
+					IconButton(onClick = onOpenNav) {
 						Icon(
-							imageVector = Icons.Default.Search,
+							imageVector = Icons.Default.Menu,
 							contentDescription = null,
 						)
-					},
-				)
-			},
-			expanded = false,
-			onExpandedChange = {},
-			shadowElevation = 16.dp,
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(start = 16.dp, top = 8.dp, end = 16.dp)
-				.background(Color.Transparent),
-		) {}
-	}
+					}
+				},
+				trailingIcon = {
+					Icon(
+						imageVector = Icons.Default.Search,
+						contentDescription = null,
+					)
+				},
+			)
+		},
+		expanded = false,
+		onExpandedChange = {},
+		shadowElevation = 8.dp,
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(start = 16.dp, top = 8.dp, end = 16.dp)
+			.background(Color.Transparent),
+	) {}
 }

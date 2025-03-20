@@ -323,6 +323,7 @@ fun ExposedSelectionMenu(
 				)
 			}
 		)
+
 		ExposedDropdownMenu(
 			expanded = expanded,
 			onDismissRequest = {

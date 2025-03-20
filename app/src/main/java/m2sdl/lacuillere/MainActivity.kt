@@ -6,8 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -43,55 +41,55 @@ class MainActivity : ComponentActivity() {
 			val restaurants = RepositoryLocator.getRestaurantRepository().findAll()
 
 			LaCuillereTheme {
-				Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-					NavHost(navController = navController, startDestination = Home) {
-						composable<Home> {
-							HomeScreen(
-								model = mapViewModel,
-								restaurants = restaurants,
-								onNavigateReservationHistory = { navController.navigate(ReservationHistory) },
-								onNavigateReviewHistory = { navController.navigate(ReviewHistory) },
-								onNavigateToRestaurant = { navController.navigate(Resto(it.id)) },
+				NavHost(modifier = Modifier.fillMaxSize(), navController = navController, startDestination = Home) {
+					composable<Home> {
+						HomeScreen(
+							model = mapViewModel,
+							restaurants = restaurants,
+							onNavigateReservationHistory = { navController.navigate(ReservationHistory) },
+							onNavigateReviewHistory = { navController.navigate(ReviewHistory) },
+							onNavigateToRestaurant = { navController.navigate(Resto(it.id)) },
+						)
+					}
+
+					// I'd love to use a different animation for this route, but it's a pita to get right
+					// And I'm out of time :)
+					composable<Resto> { backStackEntry ->
+						val resto: Resto = backStackEntry.toRoute()
+						val restaurant = RepositoryLocator.getRestaurantRepository().findById(resto.uuid)
+						restaurant?.let {
+							RestoScreen(
+								restaurant = it,
+								onNavigateToBook = { navController.navigate(Book(resto.uuid)) },
+								onNavigateToSubmitReview = { navController.navigate(SubmitReview(resto.uuid)) },
 							)
-						}
+						} ?: navController.navigate(Home)
+					}
 
-						// I'd love to use a different animation for this route, but it's a pita to get right
-						// And I'm out of time :)
-						composable<Resto> { backStackEntry ->
-							val resto: Resto = backStackEntry.toRoute()
-							val restaurant = RepositoryLocator.getRestaurantRepository().findById(resto.uuid)
-							restaurant?.let {
-								RestoScreen(
-									restaurant = it,
-									onNavigateToBook = { navController.navigate(Book(resto.uuid)) },
-									onNavigateToSubmitReview = { navController.navigate(SubmitReview(resto.uuid)) },
-								)
-							} ?: navController.navigate(Home)
-						}
+					// I'd love to use a different animation for this route, but it's a pita to get right
+					// And I'm out of time :)
+					composable<Book> { backStackEntry ->
+						val book: Book = backStackEntry.toRoute()
+						val restaurant = RepositoryLocator.getRestaurantRepository().findById(book.uuid)
+						restaurant?.let { RestoBookScreen(restaurant, onBack = { navController.popBackStack() }) }
+							?: navController.navigate(Home)
+					}
 
-						// I'd love to use a different animation for this route, but it's a pita to get right
-						// And I'm out of time :)
-						composable<Book> { backStackEntry ->
-							val book: Book = backStackEntry.toRoute()
-							val restaurant = RepositoryLocator.getRestaurantRepository().findById(book.uuid)
-							restaurant?.let { RestoBookScreen(restaurant, onBack = { navController.popBackStack() } ) } ?: navController.navigate(Home)
-						}
+					// I'd love to use a different animation for this route, but it's a pita to get right
+					// And I'm out of time :)
+					composable<SubmitReview> { backStackEntry ->
+						val review: SubmitReview = backStackEntry.toRoute()
+						val restaurant = RepositoryLocator.getRestaurantRepository().findById(review.uuid)
+						restaurant?.let { RestoReviewScreen(restaurant, onBack = { navController.popBackStack() }) }
+							?: navController.navigate(Home)
+					}
 
-						// I'd love to use a different animation for this route, but it's a pita to get right
-						// And I'm out of time :)
-						composable<SubmitReview> { backStackEntry ->
-							val review: SubmitReview = backStackEntry.toRoute()
-							val restaurant = RepositoryLocator.getRestaurantRepository().findById(review.uuid)
-							restaurant?.let { RestoReviewScreen(restaurant, onBack = { navController.popBackStack() } ) } ?: navController.navigate(Home)
-						}
+					composable<ReservationHistory> {
+						ReservationHistoryScreen(onBack = { navController.popBackStack() })
+					}
 
-						composable<ReservationHistory> {
-							ReservationHistoryScreen(onBack = { navController.popBackStack() })
-						}
-
-						composable<ReviewHistory> {
-							ReviewHistoryScreen(onBack = { navController.popBackStack() })
-						}
+					composable<ReviewHistory> {
+						ReviewHistoryScreen(onBack = { navController.popBackStack() })
 					}
 				}
 			}

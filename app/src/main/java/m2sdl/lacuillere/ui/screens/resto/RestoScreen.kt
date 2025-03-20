@@ -34,15 +34,14 @@ fun RestoScreen(
 	val tabs = listOf("À propos", "Avis")
 
 	Column(modifier = Modifier.fillMaxSize()) {
-		Box {
-			restaurant.banner.HackyImage(
-				contentDescription = null,
-				modifier = Modifier
-					.fillMaxWidth()
-					.height(200.dp)
-					.clickable { showDialog = true }
-			)
-		}
+		restaurant.banner.HackyImage(
+			contentDescription = null,
+			modifier = Modifier
+				.fillMaxWidth()
+				.height(200.dp)
+				.clickable { showDialog = true }
+		)
+
 		Text(
 			text = restaurant.name,
 			style = MaterialTheme.typography.headlineLarge,

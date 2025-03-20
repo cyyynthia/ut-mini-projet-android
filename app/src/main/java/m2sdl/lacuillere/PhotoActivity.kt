@@ -367,7 +367,7 @@ class PhotoActivity : ComponentActivity(), SensorEventListener {
 	override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) = Unit
 
 	@Composable
-	private fun RequestCamera() {
+	fun RequestCamera() {
 		val contract = ActivityResultContracts.RequestPermission()
 		val permissionLauncher = rememberLauncherForActivityResult(contract) {
 			if (!it) {

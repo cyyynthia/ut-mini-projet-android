@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -26,6 +25,7 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,7 +35,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -94,31 +93,30 @@ fun HomeScreen(
 					}
 				}
 			)
+
 			HomeScreenNav(isViewingList, onChange = { isViewingList = it })
 		}
 	}
 }
 
 @Composable
-private fun HomeScreenNav(isViewingList: Boolean, onChange: (Boolean) -> Unit) {
+fun HomeScreenNav(isViewingList: Boolean, onChange: (Boolean) -> Unit) {
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
-			.absoluteOffset(0.dp, 0.dp),
+			.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
 		horizontalAlignment = Alignment.CenterHorizontally,
-		verticalArrangement = Arrangement.Bottom
+		verticalArrangement = Arrangement.Bottom,
 	) {
-		Box(
+		Surface(
+			shape = RoundedCornerShape(22.dp),
+			shadowElevation = 8.dp,
 			modifier = Modifier
-				.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+				.width(160.dp)
+				.height(44.dp)
 				.consumeWindowInsets(WindowInsets.navigationBars)
 		) {
-			NavigationBar(
-				modifier = Modifier
-					.width(160.dp)
-					.height(44.dp)
-					.clip(RoundedCornerShape(22.dp))
-			) {
+			NavigationBar(Modifier.fillMaxSize()) {
 				NavigationBarItem(
 					selected = !isViewingList,
 					icon = { Icon(Icons.Filled.Map, contentDescription = null) },

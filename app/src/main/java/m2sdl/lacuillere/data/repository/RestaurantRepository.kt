@@ -12,6 +12,9 @@ class RestaurantRepository(initialData: MutableList<Restaurant>?) :
 	AbstractRepository<Restaurant>(initialData ?: mutableListOf(*BASE_DATA)) {
 
 	companion object {
+		// Some of those entries don't even belong here but whatever
+		// The point is to have some realish data going on, not be an actual app
+		// All of those entries are on or near the Rangueil campus of the University of Toulouse
 		private val FAKE_MENU: String = """
 			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 			
@@ -60,7 +63,7 @@ class RestaurantRepository(initialData: MutableList<Restaurant>?) :
 			menu = FAKE_MENU,
 			banner = BitmapOrDrawableRef(R.drawable.resto_med_front),
 			photos = listOf(),
-			position = LatLng(43.5609537, 1.4718944)
+			position = LatLng(43.5630944, 1.4593815)
 		)
 
 		private val CROUS_TRUCK = Restaurant(
@@ -88,7 +91,7 @@ class RestaurantRepository(initialData: MutableList<Restaurant>?) :
 			menu = FAKE_MENU,
 			banner = BitmapOrDrawableRef(R.drawable.resto_mcdo_logo),
 			photos = listOf(),
-			position = LatLng(43.562276, 1.469147)
+			position = LatLng(43.5541818, 1.4681562)
 		)
 
 		private val SUBWAY = Restaurant(
@@ -97,12 +100,40 @@ class RestaurantRepository(initialData: MutableList<Restaurant>?) :
 			about = "Mangez frais ! Préparé devant vos yeux, c'est vous le chef.",
 			address = "211 Rte de Narbonne, 31400 Toulouse",
 			addressShort = "Rangueil, Toulouse",
-			telephone = "05 61 52 36 41",
-			openingHours = listOf(Pair(LocalTime.of(11, 45), LocalTime.of(13, 15))),
+			telephone = "05 61 33 80 80",
+			openingHours = listOf(Pair(LocalTime.of(9, 0), LocalTime.of(2, 0))),
 			menu = FAKE_MENU,
 			banner = BitmapOrDrawableRef(R.drawable.resto_subway_logo),
 			photos = listOf(),
-			position = LatLng(43.562276, 1.469147)
+			position = LatLng(43.5573973, 1.4647391)
+		)
+
+		private val RESTO_ISAE = Restaurant(
+			id = UUID.fromString("19f39238-6298-4a16-b77c-1559772075c2"),
+			name = "Restaurant Universitaire ISAE",
+			about = "Restaurant universitaire, pour les étudiants de l'Institut Supérieur de l'Aéronautique et de l'Espace. Dispose d'une caféteria et une pizzeria.",
+			address = "10 Av. Marc Pélegrin, 31400 Toulouse",
+			addressShort = "Rangueil, Toulouse",
+			telephone = "05 61 52 36 41",
+			openingHours = listOf(Pair(LocalTime.of(11, 30), LocalTime.of(13, 45))),
+			menu = FAKE_MENU,
+			banner = BitmapOrDrawableRef(R.drawable.resto_subway_logo),
+			photos = listOf(),
+			position = LatLng(43.566597, 1.4750717)
+		)
+
+		private val KOPITTA = Restaurant(
+			id = UUID.fromString("286e082d-5fd6-4d9b-aab8-10b48cd81c3f"),
+			name = "Kopitta",
+			about = "Des sushis à emporter, toute la journée.",
+			address = "30 Chem. des Maraîchers, 31400 Toulouse",
+			addressShort = "Rangueil, Toulouse",
+			telephone = "05 01 02 03 04", // Hey, not me, it's what's in Google Maps lmfao
+			openingHours = listOf(Pair(LocalTime.of(7, 0), LocalTime.of(22, 0))),
+			menu = FAKE_MENU,
+			banner = BitmapOrDrawableRef(R.drawable.resto_subway_logo),
+			photos = listOf(),
+			position = LatLng(43.551488, 1.472262)
 		)
 
 		private val BASE_DATA = arrayOf<Restaurant>(
@@ -112,6 +143,8 @@ class RestaurantRepository(initialData: MutableList<Restaurant>?) :
 			CROUS_TRUCK,
 			MC_DONALDS,
 			SUBWAY,
+			RESTO_ISAE,
+			KOPITTA,
 		)
 	}
 }

@@ -2,9 +2,11 @@ package m2sdl.lacuillere.ui.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
@@ -28,13 +30,18 @@ fun HomeListScreen(restaurants: List<Restaurant>, onNavigateToRestaurant: (r: Re
 				.fillMaxSize()
 				.padding(start = 16.dp, end = 16.dp, top = 40.dp),
 		) {
-			item { Spacer(Modifier.height(56.dp)) }
+			item { Spacer(Modifier.height(50.dp)) }
 
 			itemsIndexed(restaurants) { index, restaurant ->
-				RestoListItem(restaurant, onClick = { onNavigateToRestaurant(restaurant) })
+				RestoListItem(
+					restaurant,
+					onClick = { onNavigateToRestaurant(restaurant) },
+					contentPadding = PaddingValues(16.dp),
+					modifier = Modifier.fillMaxWidth()
+				)
 
 				if (index < restaurants.lastIndex)
-					HorizontalDivider(Modifier.padding(vertical = 16.dp))
+					HorizontalDivider(Modifier.padding(horizontal = 16.dp))
 			}
 
 			item { Spacer(Modifier.height(104.dp)) }
