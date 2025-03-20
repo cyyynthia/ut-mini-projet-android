@@ -38,6 +38,8 @@ fun CameraPreview(
 	val surfaceRequest by viewModel.surfaceRequest
 	val context = LocalContext.current
 
+	val aspectRatio by viewModel.cameraAspectRatio
+
 	LaunchedEffect(lifecycleOwner) {
 		viewModel.startCamera(context.applicationContext, lifecycleOwner)
 	}
@@ -50,7 +52,7 @@ fun CameraPreview(
 		) {
 			Box(
 				Modifier
-					.aspectRatio(3f / 4f)
+					.aspectRatio(aspectRatio)
 					.fillMaxSize()
 			) {
 				CameraXViewfinder(

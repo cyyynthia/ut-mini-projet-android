@@ -40,12 +40,14 @@ class CameraViewModel : ViewModel() {
 	private val _surfaceRequest = mutableStateOf<SurfaceRequest?>(null)
 	private val _processing = mutableStateOf<Boolean>(false)
 	private val _image = mutableStateOf<Bitmap?>(null)
+	private val _cameraAspectRatio = mutableStateOf<Float>(4f / 3f)
 
 	val filter = mutableStateOf(ImageFilter.None)
 	val activityTerminated: State<Boolean> = _activityTerminated
 	val surfaceRequest: State<SurfaceRequest?> = _surfaceRequest
 	val processing: State<Boolean> = _processing
 	val image: State<Bitmap?> = _image
+	val cameraAspectRatio: State<Float> = _cameraAspectRatio
 
 	private var ambientLightAtCapture: Float = -1.0f
 
@@ -89,6 +91,14 @@ class CameraViewModel : ViewModel() {
 					cameraPreview,
 					imageCapture,
 				)
+
+				cameraPreview.resolutionInfo?.let {
+					_cameraAspectRatio.value =
+						if (it.rotationDegrees % 180 != 0)
+							it.resolution.height.toFloat() / it.resolution.width.toFloat()
+						else
+							it.resolution.width.toFloat() / it.resolution.height.toFloat()
+				}
 			} catch (ex: Exception) {
 				_activityTerminated.value = true
 				Log.e("LaCuillèrePhoto", "Use case binding failed", ex)
