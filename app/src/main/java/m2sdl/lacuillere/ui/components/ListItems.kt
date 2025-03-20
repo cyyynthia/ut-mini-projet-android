@@ -217,7 +217,21 @@ fun ReviewListHistoryItem(review: Review, modifier: Modifier = Modifier) {
 
 @Composable
 fun ReservationListItem(reservation: Reservation, modifier: Modifier = Modifier) {
-	Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+	val restaurant by derivedStateOf {
+		RepositoryLocator.getRestaurantRepository().findById(reservation.restaurantId)
+			?: throw RuntimeException("Bad record?!") // Should be properly handled, but meh.
+	}
 
+	Row(
+		horizontalArrangement = Arrangement.spacedBy(24.dp),
+		modifier = modifier
+	) {
+		RestoProfilePicture(restaurant)
+		Column {
+			Text(restaurant.name, style = MaterialTheme.typography.titleLarge)
+			Text(SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(reservation.date))
+			Text("Pour ${reservation.peopleCount} personne${if (reservation.peopleCount != 1) "s" else ""}")
+			Text("Au nom de: ${reservation.name}")
+		}
 	}
 }
