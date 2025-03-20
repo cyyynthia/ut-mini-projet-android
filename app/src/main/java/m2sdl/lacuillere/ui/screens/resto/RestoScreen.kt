@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil3.compose.AsyncImage
@@ -34,11 +35,12 @@ fun RestoScreen(
 	var selectedTabIndex by remember { mutableStateOf(0) }
 	var showDialog by remember { mutableStateOf(false) }
 	val tabs = listOf("À propos", "Avis")
+	val ctx = LocalContext.current
 
 	Column(modifier = Modifier.fillMaxSize()) {
 		Box {
 			AsyncImage(
-				model = "https://pbs.twimg.com/media/FgagCUvWAAIhOgR.jpg",
+				model = restaurant.photos[0].toBitmap(ctx), //Change for show list of photos
 				contentDescription = "Image du restaurant",
 				modifier = Modifier
 					.fillMaxWidth()
@@ -73,7 +75,7 @@ fun RestoScreen(
 		Dialog(onDismissRequest = { showDialog = false }) {
 			Box(modifier = Modifier.fillMaxSize()) {
 				AsyncImage(
-					model = "https://pbs.twimg.com/media/FgagCUvWAAIhOgR.jpg",
+					model = restaurant.photos[0].toBitmap(ctx), //Change for show list of photos
 					contentDescription = "Image du restaurant",
 					modifier = Modifier
 						.fillMaxSize()

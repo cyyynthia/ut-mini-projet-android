@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -38,6 +39,7 @@ import m2sdl.lacuillere.data.Restaurant
 @Composable
 fun HomeListScreen(restaurants: List<Restaurant>, onNavigateToRestaurant: (r: Restaurant) -> Unit) {
 	var firstChecked by remember { mutableStateOf(true) }
+	val ctx = LocalContext.current
 
 	Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
 		Spacer(Modifier.windowInsetsTopHeight(WindowInsets.systemBars))
@@ -64,7 +66,7 @@ fun HomeListScreen(restaurants: List<Restaurant>, onNavigateToRestaurant: (r: Re
 				) {
 					Row(modifier = Modifier.padding(8.dp)) {
 						AsyncImage(
-							model = "https://pbs.twimg.com/media/FgagCUvWAAIhOgR.jpg",
+							model = restaurant.banner.toBitmap(ctx),
 							contentDescription = "Image du restauront",
 							modifier = Modifier
 								.size(96.dp, 96.dp)

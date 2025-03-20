@@ -5,6 +5,7 @@ import m2sdl.lacuillere.data.Restaurant
 import m2sdl.lacuillere.hacks.BitmapOrDrawableRef
 import java.time.LocalTime
 import java.util.UUID
+import m2sdl.lacuillere.R
 
 
 class RestaurantRepository(initialData: MutableList<Restaurant>?) :
@@ -29,8 +30,8 @@ class RestaurantRepository(initialData: MutableList<Restaurant>?) :
 			telephone = "05 62 25 62 19",
 			openingHours = listOf(Pair(LocalTime.of(11, 30), LocalTime.of(13, 30))),
 			menu = FAKE_MENU,
-			banner = BitmapOrDrawableRef(-1),
-			photos = listOf(),
+			banner = BitmapOrDrawableRef(R.drawable.resto_u_lecanal_front),
+			photos = listOf(BitmapOrDrawableRef(R.drawable.resto_u_lecanal_front)),
 			position = LatLng(43.5609537, 1.4718944)
 		)
 
@@ -43,8 +44,8 @@ class RestaurantRepository(initialData: MutableList<Restaurant>?) :
 			telephone = "05 62 25 62 09",
 			openingHours = listOf(Pair(LocalTime.of(11, 30), LocalTime.of(13, 30))),
 			menu = FAKE_MENU,
-			banner = BitmapOrDrawableRef(-1),
-			photos = listOf(),
+			banner = BitmapOrDrawableRef(R.drawable.resto_theo_front),
+			photos = listOf(BitmapOrDrawableRef(R.drawable.resto_theo_front)),
 			position = LatLng(43.5609537, 1.4718944)
 		)
 
@@ -57,8 +58,8 @@ class RestaurantRepository(initialData: MutableList<Restaurant>?) :
 			telephone = "05 62 25 62 25",
 			openingHours = listOf(Pair(LocalTime.of(11, 30), LocalTime.of(13, 30))),
 			menu = FAKE_MENU,
-			banner = BitmapOrDrawableRef(-1),
-			photos = listOf(),
+			banner = BitmapOrDrawableRef(R.drawable.resto_med_front),
+			photos = listOf(BitmapOrDrawableRef(R.drawable.resto_med_front)),
 			position = LatLng(43.5609537, 1.4718944)
 		)
 
@@ -71,8 +72,8 @@ class RestaurantRepository(initialData: MutableList<Restaurant>?) :
 			telephone = "05 62 25 62 09",
 			openingHours = listOf(Pair(LocalTime.of(11, 45), LocalTime.of(13, 15))),
 			menu = FAKE_MENU,
-			banner = BitmapOrDrawableRef(-1),
-			photos = listOf(),
+			banner = BitmapOrDrawableRef(R.drawable.resto_croustruck),
+			photos = listOf(BitmapOrDrawableRef(R.drawable.resto_croustruck)),
 			position = LatLng(43.562276, 1.469147)
 		)
 
@@ -85,8 +86,8 @@ class RestaurantRepository(initialData: MutableList<Restaurant>?) :
 			telephone = "05 62 17 08 77",
 			openingHours = listOf(Pair(LocalTime.of(11, 45), LocalTime.of(13, 15))),
 			menu = FAKE_MENU,
-			banner = BitmapOrDrawableRef(-1),
-			photos = listOf(),
+			banner = BitmapOrDrawableRef(R.drawable.resto_mcdo_logo),
+			photos = listOf(BitmapOrDrawableRef(R.drawable.resto_mcdo_logo)),
 			position = LatLng(43.562276, 1.469147)
 		)
 
@@ -99,8 +100,8 @@ class RestaurantRepository(initialData: MutableList<Restaurant>?) :
 			telephone = "05 61 52 36 41",
 			openingHours = listOf(Pair(LocalTime.of(11, 45), LocalTime.of(13, 15))),
 			menu = FAKE_MENU,
-			banner = BitmapOrDrawableRef(-1),
-			photos = listOf(),
+			banner = BitmapOrDrawableRef(R.drawable.resto_subway_logo),
+			photos = listOf(BitmapOrDrawableRef(R.drawable.resto_subway_logo)),
 			position = LatLng(43.562276, 1.469147)
 		)
 
