@@ -65,7 +65,6 @@ class CameraViewModel : ViewModel() {
 		.setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
 		.build()
 	private val cameraPreview = Preview.Builder()
-		.setPreviewStabilizationEnabled(true)
 		.build()
 		.apply { setSurfaceProvider { _surfaceRequest.value = it } }
 
