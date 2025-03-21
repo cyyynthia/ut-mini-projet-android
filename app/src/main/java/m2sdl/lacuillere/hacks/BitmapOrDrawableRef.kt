@@ -52,7 +52,7 @@ class BitmapOrDrawableRef private constructor(
 		if (!this::cachedBitmap.isInitialized) {
 			cachedBitmap = bitmap
 				?: drawable?.let { ctx.resources.getDrawable(it, null).toBitmap() }
-				?: throw IllegalStateException()
+					?: throw IllegalStateException()
 		}
 
 		return cachedBitmap

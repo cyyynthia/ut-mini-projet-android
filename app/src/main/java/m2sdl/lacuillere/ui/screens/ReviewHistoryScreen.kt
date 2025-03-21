@@ -19,7 +19,6 @@ import m2sdl.lacuillere.data.Restaurant
 import m2sdl.lacuillere.data.repository.RepositoryLocator
 import m2sdl.lacuillere.ui.components.BackButton
 import m2sdl.lacuillere.ui.components.EmptyScreen
-import m2sdl.lacuillere.ui.components.EmptyScreenAction
 import m2sdl.lacuillere.ui.components.ReviewListHistoryItem
 
 @OptIn(ExperimentalMaterial3Api::class)

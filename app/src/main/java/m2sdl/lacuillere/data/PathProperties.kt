@@ -9,5 +9,5 @@ data class PathProperties(
 	val color: Color = Color.White,
 	val alpha: Float = 1f,
 	val strokeCap: StrokeCap = StrokeCap.Round,
-	val strokeJoin: StrokeJoin = StrokeJoin.Round
+	val strokeJoin: StrokeJoin = StrokeJoin.Round,
 )

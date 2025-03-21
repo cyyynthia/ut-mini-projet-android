@@ -37,7 +37,7 @@ object RepositoryLocator {
 			parcel.unmarshall(array, 0, array.size)
 			parcel.setDataPosition(0)
 			out = parcel.readBundle(this::class.java.getClassLoader())
-		} catch(e: Throwable) {
+		} catch (e: Throwable) {
 			println(e)
 			ctx.deleteFile("appdata.bin")
 		} finally {
@@ -88,7 +88,9 @@ object RepositoryLocator {
 				it.write(parcel.marshall())
 				it.flush()
 				it.close()
-			} catch(e: Throwable) { println(e) } finally {
+			} catch (e: Throwable) {
+				println(e)
+			} finally {
 				parcel.recycle()
 			}
 		}

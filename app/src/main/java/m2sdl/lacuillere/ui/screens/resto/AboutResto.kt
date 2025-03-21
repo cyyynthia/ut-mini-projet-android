@@ -1,10 +1,8 @@
 package m2sdl.lacuillere.ui.screens.resto
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,7 +40,9 @@ fun AboutTab(restaurant: Restaurant, onNavigateToBook: () -> Unit) {
 		}
 	) {
 		Column(
-			modifier = Modifier.verticalScroll(rememberScrollState()).padding(16.dp),
+			modifier = Modifier
+				.verticalScroll(rememberScrollState())
+				.padding(16.dp),
 			verticalArrangement = Arrangement.spacedBy(16.dp)
 		) {
 			restaurant.banner.HackyImage(
@@ -60,7 +60,10 @@ fun AboutTab(restaurant: Restaurant, onNavigateToBook: () -> Unit) {
 			Text("Informations", style = MaterialTheme.typography.titleLarge)
 
 			Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-				Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+				Row(
+					horizontalArrangement = Arrangement.spacedBy(8.dp),
+					verticalAlignment = Alignment.CenterVertically
+				) {
 					Icon(
 						Icons.Default.LocationOn,
 						contentDescription = null,
@@ -68,7 +71,10 @@ fun AboutTab(restaurant: Restaurant, onNavigateToBook: () -> Unit) {
 					)
 					Text(restaurant.address)
 				}
-				Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+				Row(
+					horizontalArrangement = Arrangement.spacedBy(8.dp),
+					verticalAlignment = Alignment.CenterVertically
+				) {
 					Icon(
 						Icons.Default.Phone,
 						contentDescription = null,
@@ -76,7 +82,10 @@ fun AboutTab(restaurant: Restaurant, onNavigateToBook: () -> Unit) {
 					)
 					Text(restaurant.telephone)
 				}
-				Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+				Row(
+					horizontalArrangement = Arrangement.spacedBy(8.dp),
+					verticalAlignment = Alignment.CenterVertically
+				) {
 					Icon(
 						Icons.Default.AccessTime,
 						contentDescription = null,

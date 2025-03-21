@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import m2sdl.lacuillere.data.Restaurant
 import m2sdl.lacuillere.data.repository.RepositoryLocator
-import m2sdl.lacuillere.ui.components.EmptyScreen
 import m2sdl.lacuillere.ui.components.EmptyScreenAction
 import m2sdl.lacuillere.ui.components.ReviewListItem
 

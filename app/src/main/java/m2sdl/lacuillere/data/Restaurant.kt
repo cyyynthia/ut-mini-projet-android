@@ -46,7 +46,7 @@ data class Restaurant(
 		if (openingHours.size == 1) return openingHours[0].second
 
 		val lt = LocalTime.now()
-		return openingHours.firstOrNull { it.first >=  lt }?.second
+		return openingHours.firstOrNull { it.first >= lt }?.second
 			?: openingHours.first().second // This would definitely be a suspicious case... cba to deal with it properly.
 	}
 }

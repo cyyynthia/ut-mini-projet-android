@@ -47,6 +47,7 @@ import kotlin.math.sqrt
 
 class CanvasViewModel : ViewModel() {
 	private val rng = Random()
+
 	/**
 	 * Draw mode or touch mode
 	 */

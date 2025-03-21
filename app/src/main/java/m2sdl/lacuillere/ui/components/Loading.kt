@@ -23,7 +23,7 @@ fun LinearLoadingOverlay(isLoading: Boolean, modifier: Modifier = Modifier) {
 			.fillMaxSize()
 			.absoluteOffset(0.dp, 0.dp)
 			.background(Color.Black.copy(alpha = 0.5f)),
-	)  {
+	) {
 		LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
 	}
 }
@@ -39,7 +39,7 @@ fun CircularLoadingOverlay(isLoading: Boolean, modifier: Modifier = Modifier) {
 			.background(Color.Black.copy(alpha = 0.5f)),
 		horizontalAlignment = Alignment.CenterHorizontally,
 		verticalArrangement = Arrangement.Center,
-	)  {
+	) {
 		CircularProgressIndicator()
 	}
 }

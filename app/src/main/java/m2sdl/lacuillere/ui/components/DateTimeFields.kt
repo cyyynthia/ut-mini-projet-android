@@ -51,7 +51,7 @@ import kotlin.math.floor
 fun DatePickerModal(
 	selectedDate: Long,
 	onDateSelected: (Long) -> Unit,
-	onDismiss: () -> Unit
+	onDismiss: () -> Unit,
 ) {
 	val datePickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDate)
 
@@ -84,7 +84,7 @@ fun DatePickerModal(
 fun TimePickerModal(
 	selectedDate: Long,
 	onDateSelected: (Long) -> Unit,
-	onDismiss: () -> Unit
+	onDismiss: () -> Unit,
 ) {
 	var showDial by remember { mutableStateOf(true) }
 	val hoursAndMinutes by derivedStateOf { convertMillisToHoursAndMinutes(selectedDate) }
@@ -229,7 +229,11 @@ fun DateTimePickerField(
 	enabled: Boolean = true,
 	modifier: Modifier = Modifier,
 ) {
-	Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+	Row(
+		modifier = modifier,
+		verticalAlignment = Alignment.CenterVertically,
+		horizontalArrangement = Arrangement.spacedBy(8.dp)
+	) {
 		DatePickerField(
 			label = dateLabel,
 			selectedDate = selectedDate,
