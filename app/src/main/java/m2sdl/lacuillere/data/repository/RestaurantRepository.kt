@@ -49,7 +49,7 @@ class RestaurantRepository(initialData: MutableList<Restaurant>?) :
 			menu = FAKE_MENU,
 			banner = BitmapOrDrawableRef(R.drawable.resto_theo_front),
 			photos = listOf(),
-			position = LatLng(43.5609537, 1.4718944)
+			position = LatLng(43.5622513, 1.463182)
 		)
 
 		private val RU_MEDECINE = Restaurant(

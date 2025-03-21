@@ -15,6 +15,14 @@ class ReviewRepository(initialData: MutableList<Review>?) :
 		return filterBy { it.restaurantId == resto.id }
 	}
 
+	fun filterByUserAndRestaurant(user: User, resto: Restaurant): List<Review> {
+		return filterBy { it.userId == user.id && it.restaurantId == resto.id }
+	}
+
+	fun hasUserReviewedWithPicturesRestaurant(user: User, resto: Restaurant): Boolean {
+		return database.any { it.userId == user.id && it.restaurantId == resto.id && it.photos.isNotEmpty() }
+	}
+
 	companion object {
 		val BASE_DATA = arrayOf<Review>()
 	}

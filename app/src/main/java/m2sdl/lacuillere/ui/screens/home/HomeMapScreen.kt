@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -11,6 +12,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -21,6 +24,7 @@ import kotlinx.coroutines.launch
 import m2sdl.lacuillere.R
 import m2sdl.lacuillere.applyTo
 import m2sdl.lacuillere.data.Restaurant
+import m2sdl.lacuillere.data.repository.RepositoryLocator
 import m2sdl.lacuillere.isNull
 import m2sdl.lacuillere.toast
 import m2sdl.lacuillere.ui.composables.RequestLocation
@@ -52,12 +56,21 @@ fun HomeMapScreen(
 	isDrawerOrListOpen: Boolean,
 	restaurants: List<Restaurant>,
 	onNavigateToRestaurant: (Restaurant) -> Unit,
+	onNavigateToReviewsOf: (Restaurant) -> Unit,
 	onMapUnavailable: (MapViewModel.LocationError) -> Unit,
 ) {
 	val userLocation by model.userLocation
 	val locationError by model.locationError
 	val cameraPositionState = rememberCameraPositionState { userLocation?.applyTo(this) }
 	val coroutineScope = rememberCoroutineScope()
+
+	val myself = RepositoryLocator.getUserRepository().findMyself()
+	val reviewRepo = RepositoryLocator.getReviewRepository()
+	val restosAndReviewInfo by derivedStateOf {
+		restaurants.map {
+			it to reviewRepo.hasUserReviewedWithPicturesRestaurant(myself, it)
+		}
+	}
 
 	locationError?.let {
 		when (it) {
@@ -88,14 +101,28 @@ fun HomeMapScreen(
 				mapStyleOptions = MapStyleOptions.loadRawResourceStyle(LocalContext.current, R.raw.map_style)
 			)
 		) {
-			restaurants.forEach { restaurant ->
+			restosAndReviewInfo.forEach { restoAndReview ->
+				val restaurant = restoAndReview.first
+				val hasReviewed = restoAndReview.second
+
 				Marker(
+					icon = BitmapDescriptorFactory.defaultMarker(
+						if (hasReviewed) 200f else 0f
+					),
+
 					state = MarkerState(
 						position = restaurant.position,
 					),
 					title = restaurant.name,
-					snippet = "Cliquez ici pour voir le restaurant",
+					snippet =
+						if (hasReviewed) "Vous avez des images d'ici!"
+						else "Cliquez ici pour voir le restaurant",
 					onInfoWindowClick = { onNavigateToRestaurant(restaurant) },
+					onInfoWindowLongClick = {
+						if (hasReviewed) {
+							onNavigateToReviewsOf(restaurant)
+						}
+					},
 					onClick = {
 						coroutineScope.launch {
 							cameraPositionState.animate(

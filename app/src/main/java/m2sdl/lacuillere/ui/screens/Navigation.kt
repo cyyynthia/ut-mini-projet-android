@@ -31,4 +31,8 @@ data class SubmitReview(private val id: String) {
 object ReservationHistory
 
 @Serializable
-object ReviewHistory
+data class ReviewHistory(private val id: String?) {
+	constructor(id: UUID? = null) : this(id?.toString())
+
+	val uuid: UUID? by lazy { id?.let { UUID.fromString(it) } }
+}

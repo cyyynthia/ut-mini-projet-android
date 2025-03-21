@@ -25,6 +25,7 @@ class BitmapOrDrawableRef private constructor(
 	@IgnoredOnParcel
 	private var bitmap: Bitmap? = null,
 	private val drawable: Int? = null,
+	private var compressedBitmap: ByteArray? = null,
 ) : Parcelable {
 	companion object {
 		fun Bitmap.toHackyBitmap(): BitmapOrDrawableRef {
@@ -39,10 +40,10 @@ class BitmapOrDrawableRef private constructor(
 	constructor(bitmap: Bitmap) : this(bitmap, null)
 	constructor(@DrawableRes drawable: Int) : this(null, drawable)
 
-	@Suppress("unused")
-	private var compressedBitmap: ByteArray?
-		get() = bitmap?.asCompressedByteArray()
-		set(value) { bitmap = value?.asBitmap() }
+	init {
+		compressedBitmap?.let { bitmap = it.asBitmap() }
+			?: bitmap?.let { compressedBitmap = it.asCompressedByteArray() }
+	}
 
 	@IgnoredOnParcel
 	private lateinit var cachedBitmap: Bitmap

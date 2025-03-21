@@ -51,6 +51,7 @@ fun HomeScreen(
 	onNavigateReservationHistory: () -> Unit,
 	onNavigateReviewHistory: () -> Unit,
 	onNavigateToRestaurant: (Restaurant) -> Unit,
+	onNavigateToReviewsOf: (Restaurant) -> Unit,
 ) {
 	val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 	val scope = rememberCoroutineScope()
@@ -75,6 +76,7 @@ fun HomeScreen(
 					model = model,
 					restaurants = restaurants,
 					onNavigateToRestaurant = onNavigateToRestaurant,
+					onNavigateToReviewsOf = onNavigateToReviewsOf,
 					onMapUnavailable = { isViewingList = true }
 				)
 

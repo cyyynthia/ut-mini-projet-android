@@ -13,15 +13,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import m2sdl.lacuillere.data.Restaurant
 import m2sdl.lacuillere.data.repository.RepositoryLocator
 import m2sdl.lacuillere.ui.components.BackButton
 import m2sdl.lacuillere.ui.components.ReviewListHistoryItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReviewHistoryScreen(onBack: () -> Unit) {
+fun ReviewHistoryScreen(targetRestaurant: Restaurant? = null, onBack: () -> Unit) {
 	val myself = remember { RepositoryLocator.getUserRepository().findMyself() }
-	val reviews = remember { RepositoryLocator.getReviewRepository().filterByUser(myself) }
+	val reviews = remember {
+		if (targetRestaurant != null)
+			RepositoryLocator.getReviewRepository().filterByUserAndRestaurant(myself, targetRestaurant)
+		else
+			RepositoryLocator.getReviewRepository().filterByUser(myself)
+	}
 
 	Scaffold(
 		topBar = {

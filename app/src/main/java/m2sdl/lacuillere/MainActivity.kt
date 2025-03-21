@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import m2sdl.lacuillere.data.Restaurant
 import m2sdl.lacuillere.data.repository.RepositoryLocator
 import m2sdl.lacuillere.ui.screens.Book
 import m2sdl.lacuillere.ui.screens.Home
@@ -48,8 +49,9 @@ class MainActivity : ComponentActivity() {
 							model = mapViewModel,
 							restaurants = restaurants,
 							onNavigateReservationHistory = { navController.navigate(ReservationHistory) },
-							onNavigateReviewHistory = { navController.navigate(ReviewHistory) },
+							onNavigateReviewHistory = { navController.navigate(ReviewHistory()) },
 							onNavigateToRestaurant = { navController.navigate(Resto(it.id)) },
+							onNavigateToReviewsOf = { navController.navigate(ReviewHistory(it.id)) },
 						)
 					}
 
@@ -89,17 +91,22 @@ class MainActivity : ComponentActivity() {
 						ReservationHistoryScreen(onBack = { navController.popBackStack() })
 					}
 
-					composable<ReviewHistory> {
-						ReviewHistoryScreen(onBack = { navController.popBackStack() })
+					composable<ReviewHistory> { backStackEntry ->
+						val review: ReviewHistory = backStackEntry.toRoute()
+						val restaurant = review.uuid?.let { RepositoryLocator.getRestaurantRepository().findById(it) }
+						ReviewHistoryScreen(
+							targetRestaurant = restaurant,
+							onBack = { navController.popBackStack() }
+						)
 					}
 				}
 			}
 		}
 	}
 
-	override fun onDestroy() {
+	override fun onPause() {
 		println("Saving repo")
 		RepositoryLocator.save(this) // lmao²
-		super.onDestroy()
+		super.onPause()
 	}
 }
