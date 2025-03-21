@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Reviews
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
@@ -16,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import m2sdl.lacuillere.data.Restaurant
 import m2sdl.lacuillere.data.repository.RepositoryLocator
 import m2sdl.lacuillere.ui.components.BackButton
+import m2sdl.lacuillere.ui.components.EmptyScreen
+import m2sdl.lacuillere.ui.components.EmptyScreenAction
 import m2sdl.lacuillere.ui.components.ReviewListHistoryItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +42,10 @@ fun ReviewHistoryScreen(targetRestaurant: Restaurant? = null, onBack: () -> Unit
 		}
 	) { innerPadding ->
 		if (reviews.isEmpty()) {
-			Text("no reviews")
+			EmptyScreen(
+				icon = Icons.Filled.Reviews,
+				text = "Vous n'avez jamais laissé d'avis",
+			)
 		} else {
 			LazyColumn(
 				modifier = Modifier

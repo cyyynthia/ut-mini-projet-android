@@ -10,13 +10,14 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import m2sdl.lacuillere.data.Restaurant
 import m2sdl.lacuillere.data.repository.RepositoryLocator
+import m2sdl.lacuillere.ui.components.EmptyScreen
+import m2sdl.lacuillere.ui.components.EmptyScreenAction
 import m2sdl.lacuillere.ui.components.ReviewListItem
 
 @Composable
@@ -25,13 +26,19 @@ fun ReviewsTab(restaurant: Restaurant, onNavigateToSubmitReview: () -> Unit) {
 
 	Scaffold(
 		floatingActionButton = {
-			FloatingActionButton(onClick = onNavigateToSubmitReview) {
-				Icon(Icons.Filled.Reviews, null)
-			}
+			if (reviews.isNotEmpty())
+				FloatingActionButton(onClick = onNavigateToSubmitReview) {
+					Icon(Icons.Filled.Reviews, null)
+				}
 		}
 	) {
 		if (reviews.isEmpty()) {
-			Text("no reviews")
+			EmptyScreenAction(
+				icon = Icons.Filled.Reviews,
+				text = "Personne n'a encore laissé d'avis",
+				button = "Laisser un avis",
+				onAction = onNavigateToSubmitReview
+			)
 		} else {
 			LazyColumn(
 				modifier = Modifier

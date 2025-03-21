@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
@@ -15,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import m2sdl.lacuillere.data.repository.RepositoryLocator
 import m2sdl.lacuillere.ui.components.BackButton
+import m2sdl.lacuillere.ui.components.EmptyScreen
 import m2sdl.lacuillere.ui.components.ReservationListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,7 +35,10 @@ fun ReservationHistoryScreen(onBack: () -> Unit) {
 		}
 	) { innerPadding ->
 		if (reservations.isEmpty()) {
-			Text("no reviews")
+			EmptyScreen(
+				icon = Icons.Filled.CalendarMonth,
+				text = "Vous n'avez jamais réservé",
+			)
 		} else {
 			LazyColumn(
 				modifier = Modifier
