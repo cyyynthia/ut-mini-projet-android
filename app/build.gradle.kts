@@ -40,10 +40,6 @@ android {
 }
 
 dependencies {
-	/// IMAGE
-	implementation(libs.coil.compose)
-	implementation(libs.coil.network.okhttp)
-
 	/// GOOGLE SPYWARE BLOAT
 	implementation(libs.google.maps.compose)
 	implementation(libs.google.services.location)

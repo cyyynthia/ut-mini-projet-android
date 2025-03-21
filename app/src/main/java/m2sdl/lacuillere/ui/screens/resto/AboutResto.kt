@@ -1,20 +1,32 @@
 package m2sdl.lacuillere.ui.screens.resto
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import m2sdl.lacuillere.data.Restaurant
 
@@ -30,25 +42,53 @@ fun AboutTab(restaurant: Restaurant, onNavigateToBook: () -> Unit) {
 		}
 	) {
 		Column(
-			modifier = Modifier
-				.padding(16.dp)
-				.verticalScroll(rememberScrollState())
+			modifier = Modifier.verticalScroll(rememberScrollState()).padding(16.dp),
+			verticalArrangement = Arrangement.spacedBy(16.dp)
 		) {
-			Spacer(modifier = Modifier.height(8.dp))
-			Text(text = "Adresse: ${restaurant.addressShort}", style = MaterialTheme.typography.bodyLarge)
-			Spacer(modifier = Modifier.height(8.dp))
-			Text(text = "Téléphone: ${restaurant.telephone}", style = MaterialTheme.typography.bodyLarge)
-			Spacer(modifier = Modifier.height(8.dp))
-			Text(
-				text = "Horaires d'ouverture aujourd'hui: ${restaurant.openingHours.first().first} - ${restaurant.openingHours.first().second} ",
-				style = MaterialTheme.typography.bodyLarge
+			restaurant.banner.HackyImage(
+				contentDescription = null,
+				modifier = Modifier
+					.fillMaxWidth()
+					.height(120.dp)
+					.clip(RoundedCornerShape(16.dp))
 			)
-			Spacer(modifier = Modifier.height(8.dp))
 
-			//ajouter Description
-			//Gallerie
-			//Menu
-			//Ouverture détaillée + on click proposer réservation
+			Text(restaurant.about, style = MaterialTheme.typography.bodyLarge)
+
+			HorizontalDivider()
+
+			Text("Informations", style = MaterialTheme.typography.titleLarge)
+
+			Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+				Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+					Icon(
+						Icons.Default.LocationOn,
+						contentDescription = null,
+						modifier = Modifier.size(MaterialTheme.typography.bodyLarge.fontSize.value.dp),
+					)
+					Text(restaurant.address)
+				}
+				Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+					Icon(
+						Icons.Default.Phone,
+						contentDescription = null,
+						modifier = Modifier.size(MaterialTheme.typography.bodyLarge.fontSize.value.dp),
+					)
+					Text(restaurant.telephone)
+				}
+				Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+					Icon(
+						Icons.Default.AccessTime,
+						contentDescription = null,
+						modifier = Modifier.size(MaterialTheme.typography.bodyLarge.fontSize.value.dp),
+					)
+					Text("${restaurant.openingHours.first().first} - ${restaurant.openingHours.first().second}")
+				}
+			}
+
+			HorizontalDivider()
+			Text("Menu", style = MaterialTheme.typography.titleLarge)
+			Text(restaurant.menu)
 		}
 	}
 }

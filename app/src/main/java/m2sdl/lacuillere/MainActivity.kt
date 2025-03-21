@@ -65,6 +65,7 @@ class MainActivity : ComponentActivity() {
 								restaurant = it,
 								onNavigateToBook = { navController.navigate(Book(resto.uuid)) },
 								onNavigateToSubmitReview = { navController.navigate(SubmitReview(resto.uuid)) },
+								onBack = { navController.popBackStack() },
 							)
 						} ?: navController.navigate(Home)
 					}
